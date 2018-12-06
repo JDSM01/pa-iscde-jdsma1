@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="CodeGeneratorView"
+         name="CodeGeneratorView"
+         point="pt.iscte.pidesco.view">
+      <view
+            class="pt.iscte.pidesco.codegenerator.CodeGeneratorView"
+            icon="smiley.png">
+      </view>
+   </extension>
+
+</plugin>
