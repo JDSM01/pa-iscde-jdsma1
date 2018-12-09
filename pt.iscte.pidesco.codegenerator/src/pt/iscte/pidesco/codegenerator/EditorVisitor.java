@@ -31,7 +31,7 @@ public class EditorVisitor extends ASTVisitor{
 		codeGeneratorModel.setEndOfFile(node.getStartPosition() + node.getLength());
 		return true;
 	}
-	
+
 	//visits methods
 	@Override
 	public boolean visit(MethodDeclaration node) {
@@ -63,8 +63,8 @@ public class EditorVisitor extends ASTVisitor{
 			}
 			System.out.println(initializer + " :: " + searchExpression);
 			if(initializer.equals(searchExpression) && node.getParent() instanceof FieldDeclaration) {
-					expressionType = ((FieldDeclaration) node.getParent()).getType().toString();
-					codeGeneratorModel.setExpressionType(expressionType);
+				expressionType = ((FieldDeclaration) node.getParent()).getType().toString();
+				codeGeneratorModel.setExpressionType(expressionType);
 			}
 			return true;
 		}

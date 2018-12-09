@@ -54,7 +54,7 @@ public interface CodeGeneratorService {
 	 * @return a string of a constructor and bindings with given className and a list of arguments. Returns an empty string if className is null
 	 */
 	String generateConstructorWithBinding(String className, List<Field> arguments);
-	
+
 	/**
 	 * Generates a setter for a given type and variableName
 	 * @param variableType the type of the variable that you want to create the setter
@@ -122,7 +122,7 @@ public interface CodeGeneratorService {
 	 */
 	String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue);
-	
+
 	public enum LanguageVariableType{
 		JAVA, PYTHON
 	}

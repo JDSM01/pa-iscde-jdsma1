@@ -103,7 +103,7 @@ public class CodeGeneratorView implements PidescoView{
 			}
 		});
 	}
-	
+
 	private void setBindFieldListener() {
 		bindFieldVariableButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -158,7 +158,7 @@ public class CodeGeneratorView implements PidescoView{
 			}
 		});
 	}
-	
+
 	private void setIfNullListener() {
 		generateIfNullButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -264,7 +264,7 @@ public class CodeGeneratorView implements PidescoView{
 			javaService.insertText(file, generatedIf, response.getOffset(), selection.length());
 		}
 	}
-	
+
 	private void insertBindedVariable(File file, String selection, int offset, List<Field> fields) {
 		String bindedVariable = "";
 		if(!fields.isEmpty()) {
@@ -275,7 +275,7 @@ public class CodeGeneratorView implements PidescoView{
 		}
 		javaService.insertLine(file, bindedVariable, offset + 1);
 	}
-	
+
 
 	private void parse(File file) {
 		javaService.saveFile(file);

@@ -139,7 +139,7 @@ public class CodeGeneratorModel {
 		}
 		return null;
 	}
-	
+
 	public int getConstructorEndOffset() {
 		int offset = constructorEndOffset == 0 ? getEndOfFile() - 2: constructorEndOffset + 1;
 		constructorEndOffset = 0;
@@ -173,7 +173,7 @@ public class CodeGeneratorModel {
 	public int getEndOfFile() {
 		return endOfFile;
 	}
-	
+
 	public void setEndOfFile(int endOfFile) {
 		this.endOfFile = endOfFile;
 	}
