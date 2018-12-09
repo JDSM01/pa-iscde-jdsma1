@@ -112,12 +112,20 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	@Override
 	public String generateConstructor(String className, List<Field> arguments) {
 		if(className != null) {
-			String constructor = "\npublic " + className.substring(0, className.lastIndexOf(".")) + "(";
-			for(Field field : arguments) {
-				constructor += field.getType() + " " + field.getName() + ", ";
-			}
-			constructor = constructor.substring(0, constructor.length()-2);
+			String constructor = generateConstructorString(className, arguments);
 			String constructorEnd = ") { \n\n" + "}\n";
+			return constructor + constructorEnd;
+		}
+		return "";
+	}
+
+	@Override
+	public String generateConstructorWithBinding(String className, List<Field> arguments) {
+		if(className != null) {
+			String constructor = generateConstructorString(className, arguments);
+			constructor += ") { \n";
+			constructor += generateBindedVariable(arguments);
+			String constructorEnd = "\n}\n";
 			return constructor + constructorEnd;
 		}
 		return "";
@@ -127,12 +135,12 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	public String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName, List<Field> arguments) {
 		return generateMethodString(acessLevel, isStatic, returnType, methodName, arguments, "");
 	}
-	
+
 	@Override
 	public String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName, List<Field> arguments, String returnValue) {
 		return generateMethodString(acessLevel, isStatic, returnType, methodName, arguments, returnValue);
 	}
-	
+
 	private String generateJavaVariableName(String convertFrom, boolean isStatic) {
 		if(!isStatic) {
 			char c[] = convertFrom.toCharArray();
@@ -145,12 +153,12 @@ public class CodeGeneratorController implements CodeGeneratorService{
 			return convertFrom.toUpperCase();
 		}
 	}
-	
+
 	private String generatePythonVariableName(String convertFrom) {
 		convertFrom = convertFrom.replaceAll("[A-Z]", "_$1");
 		return convertFrom.toLowerCase();
 	}
-	
+
 	private String generateMethodString(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue) {
 		String staticString = isStatic ? "static " : "";
@@ -170,21 +178,29 @@ public class CodeGeneratorController implements CodeGeneratorService{
 		for(Field argument : arguments) {
 			method +=  argument.getType() + " " + argument.getName() + ", ";
 		}
-		
+
 		method = method.substring(0, method.length()-3);
 		String methodEnd = ") { \n\t" + returnString + "\n" + "}\n";
 		return method + methodEnd;
 	}
-	
+
 	private String generateSetterString(String variableType, String variableName, String methodName) {
 		String setter = "\npublic " + "void " + methodName + "(" + variableType + " " + 
 				variableName+ "){\n\t" + "this." + variableName + " = " + variableName + ";\n" + "}\n";
 		return setter;
 	}
-	
+
 	private String generateGetterString(String variableType, String variableName, String methodName) {
 		String getter = "\npublic " + variableType + " " + methodName + "(){\n\t" + "return " + variableName + ";\n" + "}\n";
 		return getter;
+	}
+
+	private String generateConstructorString(String className, List<Field> arguments) {
+		String constructor = "\npublic " + className.substring(0, className.lastIndexOf(".")) + "(";
+		for(Field field : arguments) {
+			constructor += field.getType() + " " + field.getName() + ", ";
+		}
+		return constructor = constructor.substring(0, constructor.length()-2);
 	}
 }
 

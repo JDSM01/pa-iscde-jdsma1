@@ -48,6 +48,14 @@ public interface CodeGeneratorService {
 	String generateConstructor(String className, List<Field> arguments);
 
 	/**
+	 * Generates the  constructor of the class and binds the variables
+	 * @param className name of the class to generate the constructor
+	 * @param arguments list of fields (type and name of a variable) to be used in the constructor and to bind
+	 * @return a string of a constructor and bindings with given className and a list of arguments. Returns an empty string if className is null
+	 */
+	String generateConstructorWithBinding(String className, List<Field> arguments);
+	
+	/**
 	 * Generates a setter for a given type and variableName
 	 * @param variableType the type of the variable that you want to create the setter
 	 * @param variableName the name of the variable that you want to create the setter

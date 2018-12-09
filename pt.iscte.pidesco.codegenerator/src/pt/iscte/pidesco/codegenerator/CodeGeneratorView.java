@@ -35,6 +35,7 @@ public class CodeGeneratorView implements PidescoView{
 	private Button generateGetterButton;
 	private Button bindFieldButton;
 	private Button generateMethodButton;
+	private Button generateConstructorWithBindingButton;
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
@@ -102,7 +103,7 @@ public class CodeGeneratorView implements PidescoView{
 			}
 		});
 	}
-
+	
 	private void setBindFieldListener() {
 		bindFieldVariableButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -142,17 +143,22 @@ public class CodeGeneratorView implements PidescoView{
 		});
 	}
 
-	private void insertBindedVariable(File file, String selection, int offset, List<Field> fields) {
-		String bindedVariable = "";
-		if(!fields.isEmpty()) {
-			bindedVariable = codeGeneratorController.generateBindedVariable(fields);
-		}
-		else {
-			bindedVariable = codeGeneratorController.generateBindedVariable(Arrays.asList(new Field("", selection)));
-		}
-		javaService.insertLine(file, bindedVariable, offset + 1);
+	private void setConstructorWithBindingListnener() {
+		generateConstructorWithBindingButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
+				File file = codeGeneratorResponse.getFile();
+				if(file != null) {
+					parse(file);
+					String selection = codeGeneratorResponse.getSelection();
+					List<Field> fields = model.getTypeAndVariableNameToList(selection, ";");
+					String constructor = codeGeneratorController.generateConstructorWithBinding(file.getName(), fields);
+					javaService.insertText(file, constructor, model.getFieldEndOffset(), 0);	
+				}
+			}
+		});
 	}
-
+	
 	private void setIfNullListener() {
 		generateIfNullButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -231,6 +237,8 @@ public class CodeGeneratorView implements PidescoView{
 		generateGetterButton.setText("Create Getter");
 		generateMethodButton = new Button(viewArea, SWT.PUSH);
 		generateMethodButton.setText("Create Method");
+		generateConstructorWithBindingButton = new Button(viewArea, SWT.PUSH);
+		generateConstructorWithBindingButton.setText("Create constructor and bind");
 	}
 
 	private void setListeners() {
@@ -244,6 +252,7 @@ public class CodeGeneratorView implements PidescoView{
 		setSetterListener();
 		setGetterListener();
 		setMethodListener();
+		setConstructorWithBindingListnener();
 	}
 
 	private void insertIf(IfType type) {
@@ -255,6 +264,18 @@ public class CodeGeneratorView implements PidescoView{
 			javaService.insertText(file, generatedIf, response.getOffset(), selection.length());
 		}
 	}
+	
+	private void insertBindedVariable(File file, String selection, int offset, List<Field> fields) {
+		String bindedVariable = "";
+		if(!fields.isEmpty()) {
+			bindedVariable = codeGeneratorController.generateBindedVariable(fields);
+		}
+		else {
+			bindedVariable = codeGeneratorController.generateBindedVariable(Arrays.asList(new Field("", selection)));
+		}
+		javaService.insertLine(file, bindedVariable, offset + 1);
+	}
+	
 
 	private void parse(File file) {
 		javaService.saveFile(file);
