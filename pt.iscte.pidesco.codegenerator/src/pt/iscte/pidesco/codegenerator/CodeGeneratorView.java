@@ -1,6 +1,8 @@
 package pt.iscte.pidesco.codegenerator;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -13,6 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.AcessLevel;
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.IfType;
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.LanguageVariableType;
 import pt.iscte.pidesco.extensibility.PidescoView;
@@ -26,13 +29,18 @@ public class CodeGeneratorView implements PidescoView{
 	private CodeGeneratorModel model;
 	private Button generateIfNotNullButton;
 	private Button generateIfNullButton;
-	private Button bindVariableButton;
-	private Button createConstructorButton;
+	private Button bindFieldVariableButton;
+	private Button generateConstructorButton;
+	private Button generateSetterButton;
+	private Button generateGetterButton;
+	private Button bindFieldButton;
+	private Button generateMethodButton;
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
 		BundleContext context = Activator.getContext();
+
 
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		javaService = context.getService(serviceReference);
@@ -40,36 +48,109 @@ public class CodeGeneratorView implements PidescoView{
 		model = new CodeGeneratorModel(javaService);
 
 		createButtons(viewArea);
-		setVariableNameListener();
-		setIfListener();
-		setIfNotNullListener();
-		setIfNullListener();
-		setBindListener();
-		setCreateConstructorListener();
+		setListeners();
+	}
+
+	private void setGetterListener() {
+		generateGetterButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
+				File file = codeGeneratorResponse.getFile();
+				if(file != null) {
+					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
+					if(field != null) {
+						parse(file);
+						String setter = codeGeneratorController.generateGetter(field.getType(), field.getName());
+						javaService.insertText(file, setter, model.getConstructorEndOffset(), 0);
+
+					}				
+				}
+			}
+		});
+	}
+
+	private void setSetterListener() {
+		generateSetterButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
+				File file = codeGeneratorResponse.getFile();
+				if(file != null) {
+					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
+					if(field != null) {
+						parse(file);
+						String setter = codeGeneratorController.generateSetter(field.getType(), field.getName());
+						javaService.insertText(file, setter, model.getConstructorEndOffset(), 0);
+
+					}				
+				}
+			}
+		});
 	}
 
 	private void setCreateConstructorListener() {
-		createConstructorButton.addSelectionListener(new SelectionAdapter() {
+		generateConstructorButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				String constructor = codeGeneratorController.generateConstructor(model.getFileName());
-				javaService.insertTextAtCursor(constructor);
+				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
+				File file = codeGeneratorResponse.getFile();
+				if(file != null) {
+					parse(file);
+					String selection = codeGeneratorResponse.getSelection();
+					List<Field> fields = model.getTypeAndVariableNameToList(selection, ";");
+					String constructor = codeGeneratorController.generateConstructor(file.getName(), fields);
+					javaService.insertText(file, constructor, model.getFieldEndOffset(), 0);	
+				}
+			}
+		});
+	}
+
+	private void setBindFieldListener() {
+		bindFieldVariableButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CodeGeneratorResponse response = model.getCodeGeneratorResponseWithEndLine();
+				File file = response.getFile();
+				if (file != null) {
+					String selection = response.getSelection();
+					List<Field> fields = model.getTypeAndVariableNameToList(selection,",");
+					if(!fields.isEmpty()) {
+						parse(file);
+						int offset = model.getFieldEndOffset();
+						String bindedField = codeGeneratorController.generateField(AcessLevel.PRIVATE, false, true, fields);
+						insertBindedVariable(file, selection, response.getOffset(), fields);
+						if(offset == 1) {
+							javaService.insertLine(file, bindedField, response.getOffset() - 1);
+						}
+						else {
+							javaService.insertText(file, bindedField, offset, 0);
+						}
+					}
+				}
 			}
 		});
 	}
 
 	private void setBindListener() {
-		bindVariableButton.addSelectionListener(new SelectionAdapter() {
+		bindFieldButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				CodeGeneratorResponse response = model.getCodeGeneratorResponseWithEndLine();
 				File file = response.getFile();
 				if (file != null) {
-					String bindedVariable = codeGeneratorController.generateBindedVariable(response.getSelection());
-					if(!bindedVariable.equals("")) {
-						javaService.insertLine(file, bindedVariable, response.getOffset() + 1);
-					}
+					String selection = response.getSelection();
+					List<Field> fields = model.getTypeAndVariableNameToList(selection,",");
+					insertBindedVariable(file, selection, response.getOffset(), fields);
 				}
 			}
 		});
+	}
+
+	private void insertBindedVariable(File file, String selection, int offset, List<Field> fields) {
+		String bindedVariable = "";
+		if(!fields.isEmpty()) {
+			bindedVariable = codeGeneratorController.generateBindedVariable(fields);
+		}
+		else {
+			bindedVariable = codeGeneratorController.generateBindedVariable(Arrays.asList(new Field("", selection)));
+		}
+		javaService.insertLine(file, bindedVariable, offset + 1);
 	}
 
 	private void setIfNullListener() {
@@ -102,8 +183,28 @@ public class CodeGeneratorView implements PidescoView{
 				CodeGeneratorResponse response = model.getCodeGeneratorResponseWithOffset();
 				File file = response.getFile();
 				if (file != null) {
-					String variableName = codeGeneratorController.generateVariableName(response.getSelection(), LanguageVariableType.JAVA);
+					String variableName = codeGeneratorController.generateVariableName(response.getSelection(), LanguageVariableType.JAVA, false);
 					javaService.insertText(file, variableName, response.getOffset() , 0);
+				}
+			}
+		});
+	}
+
+	private void setMethodListener() {
+		generateMethodButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
+				File file = codeGeneratorResponse.getFile();
+				if(file != null) {
+					String selection = codeGeneratorResponse.getSelection();
+					SimpleMethod method = model.getMethodNameAndArguments(selection);
+					if(method != null) {
+						parse(file, selection.replaceAll(";", "").replaceAll(" ", ""));
+						String methodType = model.getExpressionType();
+						String setter = codeGeneratorController.generateMethod(AcessLevel.PRIVATE, false, methodType, method.getName(), method.getArguments());
+						javaService.insertText(file, setter, model.getConstructorEndOffset(), 0);
+
+					}				
 				}
 			}
 		});
@@ -118,19 +219,50 @@ public class CodeGeneratorView implements PidescoView{
 		generateIfNotNullButton.setText("Generate If not null");
 		generateIfNullButton = new Button(viewArea, SWT.PUSH);
 		generateIfNullButton.setText("Generate If null");
-		bindVariableButton = new Button(viewArea, SWT.PUSH);
-		bindVariableButton.setText("Bind Variable");
-		createConstructorButton = new Button(viewArea, SWT.PUSH);
-		createConstructorButton.setText("Create constructor");
+		bindFieldVariableButton = new Button(viewArea, SWT.PUSH);
+		bindFieldVariableButton.setText("Bind Variable with Field");
+		bindFieldButton = new Button(viewArea, SWT.PUSH);
+		bindFieldButton.setText("Bind Variable");
+		generateConstructorButton = new Button(viewArea, SWT.PUSH);
+		generateConstructorButton.setText("Create constructor");
+		generateSetterButton = new Button(viewArea, SWT.PUSH);
+		generateSetterButton.setText("Create Setter");
+		generateGetterButton = new Button(viewArea, SWT.PUSH);
+		generateGetterButton.setText("Create Getter");
+		generateMethodButton = new Button(viewArea, SWT.PUSH);
+		generateMethodButton.setText("Create Method");
+	}
+
+	private void setListeners() {
+		setVariableNameListener();
+		setIfListener();
+		setIfNotNullListener();
+		setIfNullListener();
+		setBindFieldListener();
+		setBindListener();
+		setCreateConstructorListener();
+		setSetterListener();
+		setGetterListener();
+		setMethodListener();
 	}
 
 	private void insertIf(IfType type) {
-		CodeGeneratorResponse response = model.getCodeGeneratorResponseWithIfOffset();
+		CodeGeneratorResponse response = model.getCodeGeneratorResponseWithDefaultOffset();
 		File file = response.getFile();
 		if (file != null) {
 			String selection = response.getSelection();
 			String generatedIf = codeGeneratorController.generateIfCondition(selection, type);
-			javaService.insertText(file, generatedIf, response.getOffset(), 0);
+			javaService.insertText(file, generatedIf, response.getOffset(), selection.length());
 		}
+	}
+
+	private void parse(File file) {
+		javaService.saveFile(file);
+		javaService.parseFile(file, new EditorVisitor(model));
+	}
+
+	private void parse(File file, String searchExpression) {
+		javaService.saveFile(file);
+		javaService.parseFile(file, new EditorVisitor(model, searchExpression));
 	}
 }
