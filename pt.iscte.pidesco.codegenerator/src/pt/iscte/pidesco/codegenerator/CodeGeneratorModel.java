@@ -56,6 +56,15 @@ public class CodeGeneratorModel {
 		return "";
 	}
 
+	public String getFileNameWithoutExtension() {
+		String fileName = getFileName();
+		return fileName.substring(0, fileName.lastIndexOf("."));
+	}
+
+	public String getFileNameWithoutExtension(String fileName) {
+		return fileName.substring(0, fileName.lastIndexOf("."));
+	}
+
 	public CodeGeneratorResponse getCodeGeneratorResponseWithOffset() {
 		File file = getFile();
 		String selectionText = "";
@@ -141,7 +150,7 @@ public class CodeGeneratorModel {
 	}
 
 	public int getConstructorEndOffset() {
-		int offset = constructorEndOffset == 0 ? getEndOfFile() - 2: constructorEndOffset + 1;
+		int offset = constructorEndOffset;
 		constructorEndOffset = 0;
 		return offset;
 	}
@@ -151,7 +160,7 @@ public class CodeGeneratorModel {
 	}
 
 	public int getFieldEndOffset() {
-		int offset = fieldEndOffset + 1;
+		int offset = fieldEndOffset;
 		fieldEndOffset = 0;
 		return offset;
 	}

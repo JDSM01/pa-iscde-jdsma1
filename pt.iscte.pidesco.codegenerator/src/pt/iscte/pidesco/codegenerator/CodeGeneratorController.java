@@ -44,12 +44,12 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	}
 
 	@Override
-	public String generateVariableName(String convertFrom, LanguageVariableType languageType, boolean isStatic) {
+	public String generateVariableName(String convertFrom, String languageType, boolean isStatic) {
 		if(convertFrom != null && !convertFrom.equals("")) {
-			if(languageType == LanguageVariableType.JAVA) {
+			if(languageType == JAVA) {
 				return generateJavaVariableName(convertFrom, isStatic);
 			}
-			else if(languageType == LanguageVariableType.PYTHON) {
+			else if(languageType == PYTHON) {
 				return generatePythonVariableName(convertFrom);
 			}
 		}
@@ -196,11 +196,14 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	}
 
 	private String generateConstructorString(String className, List<Field> arguments) {
-		String constructor = "\npublic " + className.substring(0, className.lastIndexOf(".")) + "(";
+		String constructor = "\npublic " + className + "(";
 		for(Field field : arguments) {
 			constructor += field.getType() + " " + field.getName() + ", ";
 		}
-		return constructor = constructor.substring(0, constructor.length()-2);
+		if(!arguments.isEmpty()) {
+			constructor = constructor.substring(0, constructor.length()-2);
+		}
+		return constructor;
 	}
 }
 

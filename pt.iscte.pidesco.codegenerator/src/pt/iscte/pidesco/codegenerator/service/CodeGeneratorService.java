@@ -7,14 +7,16 @@ import pt.iscte.pidesco.codegenerator.Regex;
 
 public interface CodeGeneratorService {
 
+	public static final String JAVA = "JAVA"; 
+	public static final String PYTHON = "JAVA";
 	/**
 	 * Generates the appropriate variable name based on a given String, language type and if it's static or not.
 	 * @param convertFrom the string to convert to a variable name
-	 * @param languageType an enum to specify to which type of programming language to generate the variable name
+	 * @param languageType a string to specify to which type of programming language to generate the variable name
 	 * @param isStatic is the variable static?
 	 * @return string based on convertFrom, language type and if it's static or not. Returns an empty string if convertFrom is null.
 	 */
-	String generateVariableName(String convertFrom, LanguageVariableType languageType, boolean isStatic);
+	String generateVariableName(String convertFrom, String languageType, boolean isStatic);
 
 	/**
 	 * Generates a name for a variable name based on a given String and a given regex
@@ -122,10 +124,6 @@ public interface CodeGeneratorService {
 	 */
 	String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue);
-
-	public enum LanguageVariableType{
-		JAVA, PYTHON
-	}
 
 	public enum IfType{
 		CONDITION, NULL, NOT_NULL

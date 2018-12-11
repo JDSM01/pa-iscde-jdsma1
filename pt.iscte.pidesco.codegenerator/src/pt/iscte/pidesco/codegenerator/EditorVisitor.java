@@ -11,18 +11,15 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 public class EditorVisitor extends ASTVisitor{
 	private final CodeGeneratorModel codeGeneratorModel;
 	private final String searchExpression;
-	private boolean methodVisit;
 
 	public EditorVisitor(CodeGeneratorModel codeGeneratorModel) {
 		this.codeGeneratorModel = codeGeneratorModel;
 		this.searchExpression = null;
-		methodVisit = true;
 	}
 
 	public EditorVisitor(CodeGeneratorModel codeGeneratorModel, String searchExpression) {
 		this.codeGeneratorModel = codeGeneratorModel;
 		this.searchExpression = searchExpression;
-		methodVisit = true;
 	}
 
 	//visits class
@@ -35,18 +32,17 @@ public class EditorVisitor extends ASTVisitor{
 	//visits methods
 	@Override
 	public boolean visit(MethodDeclaration node) {
-		if(methodVisit) {
+		if(node.getName().toString().equals(searchExpression)) {
+			System.out.println(node.getName());
 			int endOffset = node.getStartPosition() + node.getLength();
 			codeGeneratorModel.setConstructorEndOffset(endOffset);
-			methodVisit = false;
 		}
-		return false;
+		return true;
 	}
 	// visits attributes
 	@Override
 	public boolean visit(FieldDeclaration node) {
 		int endOffset = node.getStartPosition() + node.getLength();
-		System.out.println(endOffset);
 		codeGeneratorModel.setFieldEndOffset(endOffset);
 		return true; 
 	}
@@ -65,6 +61,8 @@ public class EditorVisitor extends ASTVisitor{
 			if(initializer.equals(searchExpression) && node.getParent() instanceof FieldDeclaration) {
 				expressionType = ((FieldDeclaration) node.getParent()).getType().toString();
 				codeGeneratorModel.setExpressionType(expressionType);
+			}else {
+				codeGeneratorModel.setExpressionType("void");
 			}
 			return true;
 		}
