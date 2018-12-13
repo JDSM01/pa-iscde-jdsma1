@@ -1,5 +1,6 @@
 package pt.iscte.pidesco.codegenerator;
 
+//An object containing the string to be replaced and the string to replace it
 public class Regex {
 
 	private String replaceFrom;

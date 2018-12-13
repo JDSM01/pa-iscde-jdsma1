@@ -25,7 +25,7 @@ public class EditorVisitor extends ASTVisitor{
 	//visits class
 	@Override
 	public boolean visit(TypeDeclaration node) {
-		codeGeneratorModel.setEndOfFile(node.getStartPosition() + node.getLength());
+		codeGeneratorModel.setEndOfFileOffset(node.getStartPosition() + node.getLength());
 		return true;
 	}
 
@@ -60,9 +60,9 @@ public class EditorVisitor extends ASTVisitor{
 			System.out.println(initializer + " :: " + searchExpression);
 			if(initializer.equals(searchExpression) && node.getParent() instanceof FieldDeclaration) {
 				expressionType = ((FieldDeclaration) node.getParent()).getType().toString();
-				codeGeneratorModel.setExpressionType(expressionType);
+				codeGeneratorModel.setMethodType(expressionType);
 			}else {
-				codeGeneratorModel.setExpressionType("void");
+				codeGeneratorModel.setMethodType("void");
 			}
 			return true;
 		}

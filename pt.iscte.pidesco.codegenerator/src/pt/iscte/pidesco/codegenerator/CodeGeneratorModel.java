@@ -13,17 +13,19 @@ public class CodeGeneratorModel {
 	private final JavaEditorServices javaService;
 	private int constructorEndOffset;
 	private int fieldEndOffset;
-	private String expressionType;
+	private String methodType;
 	private int endOfFile;
 
 	public CodeGeneratorModel(JavaEditorServices javaService) {
 		this.javaService = javaService;
 	}
 
+	//Returns open filed
 	public File getFile() {
 		return javaService.getOpenedFile();
 	}
 
+	//Returns a ITextSelection in the opened file
 	public ITextSelection getSelection() {
 		File file = getFile();
 		if(getFile() != null) {
@@ -32,6 +34,7 @@ public class CodeGeneratorModel {
 		return null;
 	}
 
+	//Returns the offset of the selection in the opened file
 	public int getOffset() {
 		ITextSelection selection = getSelection();
 		if(selection != null) {
@@ -40,6 +43,7 @@ public class CodeGeneratorModel {
 		return -1;
 	}
 
+	//Returns the ITextSelection string from the opened file
 	public String getTextSelected() {
 		ITextSelection selection = getSelection();
 		if(selection != null) {
@@ -48,6 +52,7 @@ public class CodeGeneratorModel {
 		return "";
 	}
 
+	//Returns the name of the opened file
 	public String getFileName() {
 		File file = getFile();
 		if(file != null) {
@@ -56,15 +61,19 @@ public class CodeGeneratorModel {
 		return "";
 	}
 
+	//Returns the name of the opened file without the extension
 	public String getFileNameWithoutExtension() {
 		String fileName = getFileName();
 		return fileName.substring(0, fileName.lastIndexOf("."));
 	}
 
+	//Returns the name of a given file name without the extension
 	public String getFileNameWithoutExtension(String fileName) {
 		return fileName.substring(0, fileName.lastIndexOf("."));
 	}
 
+	//Returns an object containing the opened file, the string of the ITextSelection and the sum of the offset and length 
+	//of the ITextSelection
 	public CodeGeneratorResponse getCodeGeneratorResponseWithOffset() {
 		File file = getFile();
 		String selectionText = "";
@@ -79,6 +88,7 @@ public class CodeGeneratorModel {
 		return new CodeGeneratorResponse(file, selectionText, offset);
 	}
 
+	//Returns an object contain the opened file, the string of the ITextSelection and the end line of the ITextSelection
 	public CodeGeneratorResponse getCodeGeneratorResponseWithEndLine() {
 		File file = getFile();
 		String selectionText = "";
@@ -93,6 +103,7 @@ public class CodeGeneratorModel {
 		return new CodeGeneratorResponse(file, selectionText, endLine);
 	}
 
+	//Returns an object containing the opened file, the string of the ITextSelection and the offset of the ITextSelection
 	public CodeGeneratorResponse getCodeGeneratorResponseWithDefaultOffset() {
 		File file = getFile();
 		String selectionText = "";
@@ -149,41 +160,49 @@ public class CodeGeneratorModel {
 		return null;
 	}
 
+	//Returns the ending offset of a constructor and erases the saved offset
 	public int getConstructorEndOffset() {
 		int offset = constructorEndOffset;
 		constructorEndOffset = 0;
 		return offset;
 	}
 
+	//Sets the ending offset of a constructor
 	public void setConstructorEndOffset(int constructorEndLine) {
 		this.constructorEndOffset = constructorEndLine;
 	}
 
+	//Returns the offset of the last field and erases the saved offset
 	public int getFieldEndOffset() {
 		int offset = fieldEndOffset;
 		fieldEndOffset = 0;
 		return offset;
 	}
 
+	//Sets the offset of the last field
 	public void setFieldEndOffset(int fieldEndLine) {
 		this.fieldEndOffset = fieldEndLine;
 	}
 
-	public String getExpressionType() {
-		String expression = expressionType;
-		expressionType = null;
-		return expression;
+	//Returns the type of a certain method and erases the saved method type
+	public String getMethodType() {
+		String method = methodType;
+		methodType = null;
+		return method;
 	}
 
-	public void setExpressionType(String expressionType) {
-		this.expressionType = expressionType;
+	//Sets the method type of a certain method
+	public void setMethodType(String expressionType) {
+		this.methodType = expressionType;
 	}
 
-	public int getEndOfFile() {
+	//Returns the offset of the last line of a certain file
+	public int getEndOfFileOffset() {
 		return endOfFile;
 	}
 
-	public void setEndOfFile(int endOfFile) {
+	//Sets the offset of the last line of a certain file
+	public void setEndOfFileOffset(int endOfFile) {
 		this.endOfFile = endOfFile;
 	}
 }

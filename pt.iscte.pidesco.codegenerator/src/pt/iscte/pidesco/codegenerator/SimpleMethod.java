@@ -2,6 +2,7 @@ package pt.iscte.pidesco.codegenerator;
 
 import java.util.List;
 
+//An object containing a method name and its arguments
 public class SimpleMethod {
 
 	private final String name;
