@@ -12,8 +12,16 @@ import pt.iscte.pidesco.codegenerator.internal.Regex;
  */
 public interface CodeGeneratorService {
 
+	/**
+	 * String used to specify the language to generate a variable name
+	 */
 	public static final String JAVA = "JAVA"; 
+	
+	/**
+	 * String used to specify the language to generate a variable name
+	 */
 	public static final String PYTHON = "PYTHON";
+	
 	/**
 	 * Generates the appropriate variable name based on a given String, language type and if it's static or not.
 	 * @param convertFrom the string to convert to a variable name
@@ -174,10 +182,23 @@ public interface CodeGeneratorService {
 	String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue, String body);
 
+	/**
+	 * Enum with the different types of if that can be generated
+	 * CONDITION: an if where you set the condition
+	 * NULL: an if where the input is then verified against a == null
+	 * NOT_NULL: an if where the input is then verified against a != null
+	 * @author D01
+	 *
+	 */
 	public enum IfType{
 		CONDITION, NULL, NOT_NULL
 	}
 
+	/**
+	 * Enum with the different types of acess levels
+	 * @author D01
+	 *
+	 */
 	public enum AcessLevel{
 		PUBLIC, PROTECTED, PACKAGE_PRIVATE, PRIVATE
 	}
