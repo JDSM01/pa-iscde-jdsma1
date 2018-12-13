@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator;
+package pt.iscte.pidesco.codegenerator.internal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,7 +51,6 @@ public class CodeGeneratorView implements PidescoView{
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
 		BundleContext context = Activator.getContext();
-
 
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		javaService = context.getService(serviceReference);
