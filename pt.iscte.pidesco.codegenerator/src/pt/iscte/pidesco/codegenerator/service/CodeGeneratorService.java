@@ -8,7 +8,7 @@ import pt.iscte.pidesco.codegenerator.Regex;
 public interface CodeGeneratorService {
 
 	public static final String JAVA = "JAVA"; 
-	public static final String PYTHON = "JAVA";
+	public static final String PYTHON = "PYTHON";
 	/**
 	 * Generates the appropriate variable name based on a given String, language type and if it's static or not.
 	 * @param convertFrom the string to convert to a variable name
