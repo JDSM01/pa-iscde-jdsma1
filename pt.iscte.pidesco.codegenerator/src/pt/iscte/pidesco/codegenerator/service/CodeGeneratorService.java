@@ -40,6 +40,16 @@ public interface CodeGeneratorService {
 	String generateIfCondition(String selection, IfType ifType);
 
 	/**
+	 * Generates an if condition with an input on what to do inside of it
+	 * @param selectedText what will be used as condition
+	 * @param input what will be used inside of the if
+	 * @param ifType the type of if to be generated
+	 * @return an if condition based on the string and type given. In case the ifType is not recognized it will return the condition If.
+	 * e.g. If type is null it will return a condition of the type if(selection == null)
+	 */
+	String generateIfCondition(String selectedText, String input, IfType ifType);
+
+	/**
 	 * Generates a string of a binded variable.
 	 * @param fields list of fields(type and name of a variables) to be binded
 	 * @return a string of the type this.variableName = variableName. Returns empty string if list is empty

@@ -56,10 +56,10 @@ public class CodeGeneratorView implements PidescoView{
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
 		BundleContext context = Activator.getContext();
-		
+
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		javaService = context.getService(serviceReference);
-		
+
 		model = new CodeGeneratorModel(javaService);
 		currentCodeGeneratorService = new CodeGeneratorController();
 		createButtons(viewArea);
@@ -242,13 +242,13 @@ public class CodeGeneratorView implements PidescoView{
 		if(elements.length > 0) {
 			extensionServicesMap = new HashMap<>();	//Create hashmap to handle the different services extensions
 			extensionServicesMap.put(ORIGINAL_TAG, currentCodeGeneratorService); //Saves the current service
-			
+
 			//Radio Button creation
 			Composite composite = new Composite(viewArea, SWT.NONE);
 			composite.setLayout(new RowLayout(SWT.HORIZONTAL));
 			new Label(composite, SWT.NONE).setText("Extensions: ");
 			createRadioButton(composite, ORIGINAL_TAG, true);
-			
+
 			//To avoid not unique extension names
 			List<String> extensionsNames = new ArrayList<>();
 			extensionsNames.add(ORIGINAL_TAG);

@@ -73,8 +73,17 @@ public class CodeGeneratorController implements CodeGeneratorService{
 
 	@Override
 	public String generateIfCondition(String selectedText, IfType ifType) {
+		return generateIfString(selectedText, "", ifType);
+	}
+
+	@Override
+	public String generateIfCondition(String selectedText, String input, IfType ifType) {
+		return generateIfString(selectedText, input, ifType);
+	}
+
+	private String generateIfString(String selectedText, String input, IfType ifType) {
 		String ifCondition = "";
-		String endIf = " { \n\n } \n";
+		String endIf = " { \n\t" + input + "\n} \n";
 		String variable = "variable";
 		if(selectedText != null && !selectedText.equals("")) {
 			variable = selectedText;
