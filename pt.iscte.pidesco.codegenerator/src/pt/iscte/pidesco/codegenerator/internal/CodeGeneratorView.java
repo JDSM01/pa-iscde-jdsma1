@@ -17,8 +17,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.AcessLevel;
@@ -55,13 +53,11 @@ public class CodeGeneratorView implements PidescoView{
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
-		BundleContext context = Activator.getContext();
 
-		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
-		javaService = context.getService(serviceReference);
-
+		javaService = CodeGeneratorActivator.getInstance().getJavaEditorServices();
+		currentCodeGeneratorService = CodeGeneratorActivator.getInstance().getCodeGeneratorService();
+		
 		model = new CodeGeneratorModel(javaService);
-		currentCodeGeneratorService = new CodeGeneratorController();
 		createButtons(viewArea);
 		setListeners();
 		createExtensions(viewArea);

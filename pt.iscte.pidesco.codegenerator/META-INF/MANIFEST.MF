@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Codegenerator
 Bundle-SymbolicName: pt.iscte.pidesco.codegenerator;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: pt.iscte.pidesco.codegenerator.internal.Activator
+Bundle-Activator: pt.iscte.pidesco.codegenerator.internal.CodeGeneratorActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: pt.iscte.pidesco.codegenerator
 Import-Package: org.eclipse.jdt.core,
