@@ -81,31 +81,12 @@ public class CodeGeneratorController implements CodeGeneratorService{
 		return generateIfString(selectedText, input, ifType);
 	}
 
-	private String generateIfString(String selectedText, String input, IfType ifType) {
-		String ifCondition = "";
-		String endIf = " { \n\t" + input + "\n} \n";
-		String variable = "variable";
-		if(selectedText != null && !selectedText.equals("")) {
-			variable = selectedText;
-		}
-		if(ifType == IfType.NOT_NULL) {
-			ifCondition = "if(" + variable + " != null)";
-		}
-		else if(ifType == IfType.NULL) {
-			ifCondition = "if(" + variable + " == null)";
-		}
-		else {
-			ifCondition = "if(" + variable + ")";
-		}
-		return ifCondition + endIf;
-	}
-
 	@Override
 	public String generateBindedVariable(List<Field> fields) {
 		String text = "";
 		for(int i = 0; i < fields.size(); i++) {
 			Field field = fields.get(i);
-			text += "\t\t" + "this." + field.getName() + " = " + field.getName() + ";";
+			text += "\t" + "this." + field.getName() + " = " + field.getName() + ";";
 			if(i < fields.size() - 1) {
 				text += "\n";
 			}
@@ -127,25 +108,25 @@ public class CodeGeneratorController implements CodeGeneratorService{
 
 	@Override
 	public String generateConstructor(String className, List<Field> arguments) {
-		if(className != null) {
-			String constructor = generateConstructorString(className, arguments);
-			String constructorEnd = ") { \n\n" + "}\n";
-			return constructor + constructorEnd;
-		}
-		return "";
+		return generateSimpleConstructorString(className, arguments, "");
 	}
 
 	@Override
-	public String generateConstructorWithBinding(String className, List<Field> arguments) {
-		if(className != null) {
-			String constructor = generateConstructorString(className, arguments);
-			constructor += ") { \n";
-			constructor += generateBindedVariable(arguments);
-			String constructorEnd = "\n}\n";
-			return constructor + constructorEnd;
-		}
-		return "";
+	public String generateConstructor(String className, List<Field> arguments, String input) {
+		return generateSimpleConstructorString(className, arguments, input);
 	}
+
+
+	@Override
+	public String generateConstructorWithBinding(String className, List<Field> arguments) {
+		return generateConstructorWithBindString(className, arguments, "");
+	}
+
+	@Override
+	public String generateConstructorWithBinding(String className, List<Field> arguments, String input) {
+		return generateConstructorWithBindString(className, arguments, input);
+	}
+
 
 	@Override
 	public String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName, List<Field> arguments) {
@@ -220,6 +201,45 @@ public class CodeGeneratorController implements CodeGeneratorService{
 			constructor = constructor.substring(0, constructor.length()-2);
 		}
 		return constructor;
+	}
+
+	private String generateIfString(String selectedText, String input, IfType ifType) {
+		String ifCondition = "";
+		String endIf = " { \n\t" + input + "\n} \n";
+		String variable = "variable";
+		if(selectedText != null && !selectedText.equals("")) {
+			variable = selectedText;
+		}
+		if(ifType == IfType.NOT_NULL) {
+			ifCondition = "if(" + variable + " != null)";
+		}
+		else if(ifType == IfType.NULL) {
+			ifCondition = "if(" + variable + " == null)";
+		}
+		else {
+			ifCondition = "if(" + variable + ")";
+		}
+		return ifCondition + endIf;
+	}
+
+	private String generateSimpleConstructorString(String className, List<Field> arguments, String input) {
+		if(className != null) {
+			String constructor = generateConstructorString(className, arguments);
+			String constructorEnd = ") { \n\t" + input + "\n}\n";
+			return constructor + constructorEnd;
+		}
+		return "";
+	}
+
+	private String generateConstructorWithBindString(String className, List<Field> arguments, String input) {
+		if(className != null) {
+			String constructor = generateConstructorString(className, arguments);
+			constructor += ") { \n";
+			constructor += generateBindedVariable(arguments);
+			String constructorEnd = input + "\n}\n";
+			return constructor + constructorEnd;
+		}
+		return "";
 	}
 }
 

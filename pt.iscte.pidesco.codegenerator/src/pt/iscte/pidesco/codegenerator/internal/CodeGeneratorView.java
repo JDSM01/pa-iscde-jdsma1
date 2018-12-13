@@ -173,8 +173,9 @@ public class CodeGeneratorView implements PidescoView{
 					parse(file);
 					String selection = codeGeneratorResponse.getSelection();
 					List<Field> fields = model.getTypeAndVariableNameToList(selection, ";");
-					String constructor = currentCodeGeneratorService.generateConstructorWithBinding(file.getName(), fields);
-					javaService.insertText(file, constructor, model.getFieldEndOffset(), 0);	
+					String fileName = model.getFileNameWithoutExtension(file.getName());
+					String constructor = currentCodeGeneratorService.generateConstructorWithBinding(fileName, fields);
+					javaService.insertText(file, constructor, model.getFieldEndOffset() + 1, 0);	
 				}
 			}
 		};

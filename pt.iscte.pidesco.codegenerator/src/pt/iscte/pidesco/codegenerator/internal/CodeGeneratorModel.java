@@ -205,7 +205,9 @@ public class CodeGeneratorModel {
 
 	//Returns the offset of the last line of a certain file
 	public int getEndOfFileOffset() {
-		return endOfFile;
+		int endOffset = endOfFile;
+		endOfFile = 0;
+		return endOffset;
 	}
 
 	//Sets the offset of the last line of a certain file
