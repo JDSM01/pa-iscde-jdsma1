@@ -76,7 +76,7 @@ public class CodeGeneratorView implements PidescoView{
 					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
 					if(field != null) {
 						String fileName = model.getFileNameWithoutExtension(file.getName());
-						parse(file, fileName);
+						parse(file, fileName, null);
 						String setter = currentCodeGeneratorService.generateGetter(field.getType(), field.getName());
 						int offset = model.getConstructorEndOffset();
 						offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
@@ -96,7 +96,7 @@ public class CodeGeneratorView implements PidescoView{
 					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
 					if(field != null) {
 						String fileName = model.getFileNameWithoutExtension(file.getName());
-						parse(file, fileName);
+						parse(file, fileName, null);
 						String setter = currentCodeGeneratorService.generateSetter(field.getType(), field.getName());
 						int offset = model.getConstructorEndOffset();
 						offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
@@ -228,8 +228,7 @@ public class CodeGeneratorView implements PidescoView{
 					SimpleMethod method = model.getMethodNameAndArguments(selection);
 					if(method != null) {
 						String fileName = model.getFileNameWithoutExtension(file.getName());
-						parse(file, fileName);
-						parse(file, selection.replaceAll(";", "").replaceAll(" ", ""));
+						parse(file, fileName, selection.replaceAll(";", "").replaceAll(" ", ""));
 						String methodType = model.getMethodType();
 						int offset = model.getConstructorEndOffset();
 						offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset;
@@ -362,8 +361,8 @@ public class CodeGeneratorView implements PidescoView{
 		javaService.parseFile(file, new EditorVisitor(model));
 	}
 
-	private void parse(File file, String searchExpression) {
+	private void parse(File file, String methodSearchExpression, String variableSearchExpression) {
 		javaService.saveFile(file);
-		javaService.parseFile(file, new EditorVisitor(model, searchExpression));
+		javaService.parseFile(file, new EditorVisitor(model, methodSearchExpression, variableSearchExpression));
 	}
 }

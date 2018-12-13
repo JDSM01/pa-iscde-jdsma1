@@ -77,8 +77,8 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	}
 
 	@Override
-	public String generateIfCondition(String selectedText, String input, IfType ifType) {
-		return generateIfString(selectedText, input, ifType);
+	public String generateIfCondition(String selectedText, String body, IfType ifType) {
+		return generateIfString(selectedText, body, ifType);
 	}
 
 	@Override
@@ -130,12 +130,17 @@ public class CodeGeneratorController implements CodeGeneratorService{
 
 	@Override
 	public String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName, List<Field> arguments) {
-		return generateMethodString(acessLevel, isStatic, returnType, methodName, arguments, "");
+		return generateMethodString(acessLevel, isStatic, returnType, methodName, arguments, "", "");
 	}
 
 	@Override
 	public String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName, List<Field> arguments, String returnValue) {
-		return generateMethodString(acessLevel, isStatic, returnType, methodName, arguments, returnValue);
+		return generateMethodString(acessLevel, isStatic, returnType, methodName, arguments, returnValue, "");
+	}
+
+	@Override
+	public String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName, List<Field> arguments, String returnValue, String body) {
+		return generateMethodString(acessLevel, isStatic, returnType, methodName, arguments, returnValue, body);
 	}
 
 	private String generateJavaVariableName(String convertFrom, boolean isStatic) {
@@ -157,15 +162,14 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	}
 
 	private String generateMethodString(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
-			List<Field> arguments, String returnValue) {
+			List<Field> arguments, String returnValue, String body) {
 		String staticString = isStatic ? "static " : "";
 		String acessLevelString = acessLevel == AcessLevel.PACKAGE_PRIVATE ? "" : acessLevel.toString().toLowerCase() + " ";
 		String returnTypeString = returnType == null ? "void" : returnType;
 		String returnString = "return null;";
 		if(returnValue != null && !returnValue.equals("")) {
 			returnString = "return " + returnValue + ";";
-		}
-		if(returnType.equals("int")) {
+		}else if(returnType.equals("int")) {
 			returnString = "return -1;";
 		}
 		else if(returnType.equals("void")) {
@@ -175,9 +179,11 @@ public class CodeGeneratorController implements CodeGeneratorService{
 		for(Field argument : arguments) {
 			method +=  argument.getType() + " " + argument.getName() + ", ";
 		}
-
+		if(body != null && !body.equals("")) {
+			body += "\n"; 
+		}
 		method = method.substring(0, method.length()-2);
-		String methodEnd = ") { \n\t" + returnString + "\n" + "}\n";
+		String methodEnd = ") { \n\t" + body + returnString + "\n" + "}\n";
 		return method + methodEnd;
 	}
 
@@ -203,9 +209,9 @@ public class CodeGeneratorController implements CodeGeneratorService{
 		return constructor;
 	}
 
-	private String generateIfString(String selectedText, String input, IfType ifType) {
+	private String generateIfString(String selectedText, String body, IfType ifType) {
 		String ifCondition = "";
-		String endIf = " { \n\t" + input + "\n} \n";
+		String endIf = " { \n\t" + body + "\n} \n";
 		String variable = "variable";
 		if(selectedText != null && !selectedText.equals("")) {
 			variable = selectedText;

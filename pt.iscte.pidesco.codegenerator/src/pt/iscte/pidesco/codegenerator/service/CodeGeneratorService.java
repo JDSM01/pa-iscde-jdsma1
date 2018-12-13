@@ -42,12 +42,12 @@ public interface CodeGeneratorService {
 	/**
 	 * Generates an if condition with an input on what to do inside of it
 	 * @param selectedText what will be used as condition
-	 * @param input what will be used inside of the if
+	 * @param body what will be used inside of the if (break lines and tabs need to be specified)
 	 * @param ifType the type of if to be generated
 	 * @return an if condition based on the string and type given. In case the ifType is not recognized it will return the condition If.
 	 * e.g. If type is null it will return a condition of the type if(selection == null)
 	 */
-	String generateIfCondition(String selectedText, String input, IfType ifType);
+	String generateIfCondition(String selectedText, String body, IfType ifType);
 
 	/**
 	 * Generates a string of a binded variable.
@@ -152,11 +152,27 @@ public interface CodeGeneratorService {
 	 * @param returnType type of what the method will return
 	 * @param methodName name of the method that will be generated
 	 * @param arguments list of fields (type and name of a variable) to be used in the method as arguments
-	 * @param returnValue value to be used as default in the return statement (e.g. return returnValue)
+	 * @param returnValue value to be used as default in the return statement (e.g. return returnValue).
+	 * no return will be used if value is null or an empty string
 	 * @return a string with the method
 	 */
 	String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue);
+
+	/**
+	 * Generates a field given the arguments (e.g. public static final type name)
+	 * @param acessLevel enum of the different acessLevels that the field can have (public, private, protected, package-private)
+	 * @param isStatic is the field static?
+	 * @param returnType type of what the method will return
+	 * @param methodName name of the method that will be generated
+	 * @param arguments list of fields (type and name of a variable) to be used in the method as arguments
+	 * @param returnValue value to be used as default in the return statement (e.g. return returnValue).
+	 * no return will be used if value is null or an empty string
+	 * @param body a string with the code to be used inside the method created (break lines and tabs need to be specified)
+	 * @return a string with the method
+	 */
+	String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
+			List<Field> arguments, String returnValue, String body);
 
 	public enum IfType{
 		CONDITION, NULL, NOT_NULL

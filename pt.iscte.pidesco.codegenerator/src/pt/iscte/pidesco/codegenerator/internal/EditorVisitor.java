@@ -15,7 +15,8 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
  */
 public class EditorVisitor extends ASTVisitor{
 	private final CodeGeneratorModel codeGeneratorModel;
-	private final String searchExpression;
+	private final String methodSearchExpression;
+	private final String variableSearchExpression;
 
 	/**
 	 * This constructor is used in case there's no need to search for a specific term
@@ -23,17 +24,20 @@ public class EditorVisitor extends ASTVisitor{
 	 */
 	public EditorVisitor(CodeGeneratorModel codeGeneratorModel) {
 		this.codeGeneratorModel = codeGeneratorModel;
-		this.searchExpression = null;
+		this.methodSearchExpression = null;
+		this.variableSearchExpression = null;
 	}
 
 	/**
 	 * This constructor is used in case there's the need to search for a specific term
 	 * @param codeGeneratorModel Model where the visitor will set the information
-	 * @param searchExpression Expression to be used in the ASTVisitor methods
+	 * @param variableSearchExpression expression to be used by the ASTVisitor to search for a specific variable
+	 * @param methodSearchExpression expression to be used by the ASTVisitor to search for a specific method
 	 */ 
-	public EditorVisitor(CodeGeneratorModel codeGeneratorModel, String searchExpression) {
+	public EditorVisitor(CodeGeneratorModel codeGeneratorModel, String methodSearchExpression, String variableSearchExpression) {
 		this.codeGeneratorModel = codeGeneratorModel;
-		this.searchExpression = searchExpression;
+		this.methodSearchExpression = methodSearchExpression;
+		this.variableSearchExpression = variableSearchExpression;
 	}
 
 	//visits class
@@ -46,7 +50,7 @@ public class EditorVisitor extends ASTVisitor{
 	//visits methods
 	@Override
 	public boolean visit(MethodDeclaration node) {
-		if(node.getName().toString().equals(searchExpression)) {
+		if(node.getName().toString().equals(methodSearchExpression)) {
 			int endOffset = node.getStartPosition() + node.getLength();
 			codeGeneratorModel.setConstructorEndOffset(endOffset);
 		}
@@ -63,14 +67,14 @@ public class EditorVisitor extends ASTVisitor{
 	// visits variable declarations
 	@Override
 	public boolean visit(VariableDeclarationFragment node) {
-		if(searchExpression != null) {
+		if(variableSearchExpression != null) {
 			Expression expression = node.getInitializer();
 			String initializer = "";
 			String expressionType = "";
 			if(expression != null) {
 				initializer = expression.toString();
 			}
-			if(initializer.equals(searchExpression) && node.getParent() instanceof FieldDeclaration) {
+			if(initializer.equals(variableSearchExpression) && node.getParent() instanceof FieldDeclaration) {
 				expressionType = ((FieldDeclaration) node.getParent()).getType().toString();
 				codeGeneratorModel.setMethodType(expressionType);
 			}else {
