@@ -262,7 +262,6 @@ public class CodeGeneratorView implements PidescoView{
 	private String getUniqueName(List<String> extensionsNames, String name, int notUniqueNumber) {
 		String uniqueName = name;
 		for(String extensionName : extensionsNames) {
-			System.out.println(extensionName + " :: " + name);
 			if(extensionName.equals(name)) {
 				if(notUniqueNumber != INITIAL_UNIQUE_NAME) {
 					name = name.substring(0, name.length() - String.valueOf(notUniqueNumber).length());
