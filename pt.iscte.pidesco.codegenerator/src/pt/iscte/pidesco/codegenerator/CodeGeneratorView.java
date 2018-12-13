@@ -30,6 +30,7 @@ import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
 public class CodeGeneratorView implements PidescoView{
 	private final static String ORIGINAL_TAG = "original";
+	private final static int INITIAL_UNIQUE_NAME = 1;
 	private JavaEditorServices javaService;
 	private CodeGeneratorService currentCodeGeneratorService;
 	private CodeGeneratorModel model;
@@ -245,12 +246,12 @@ public class CodeGeneratorView implements PidescoView{
 			extensionsNames.add(ORIGINAL_TAG);
 			for(IConfigurationElement element : elements) {
 				String name = element.getAttribute("name");
-				String uniqueName = getUniqueName(extensionsNames, name, 1);
+				String uniqueName = getUniqueName(extensionsNames, name, INITIAL_UNIQUE_NAME);
 				extensionsNames.add(uniqueName);
 				try {
 					CodeGeneratorService codeGeneratorController = (CodeGeneratorService) element.createExecutableExtension("class");
-					extensionServicesMap.put(name, codeGeneratorController);
-					createRadioButton(composite, name, false);
+					extensionServicesMap.put(uniqueName, codeGeneratorController);
+					createRadioButton(composite, uniqueName, false);
 				} catch (CoreException e1) {
 					e1.printStackTrace();
 				}
@@ -261,7 +262,11 @@ public class CodeGeneratorView implements PidescoView{
 	private String getUniqueName(List<String> extensionsNames, String name, int notUniqueNumber) {
 		String uniqueName = name;
 		for(String extensionName : extensionsNames) {
+			System.out.println(extensionName + " :: " + name);
 			if(extensionName.equals(name)) {
+				if(notUniqueNumber != INITIAL_UNIQUE_NAME) {
+					name = name.substring(0, name.length() - String.valueOf(notUniqueNumber).length());
+				}
 				uniqueName = name + notUniqueNumber;
 				uniqueName = getUniqueName(extensionsNames, uniqueName, notUniqueNumber + 1);
 			}
