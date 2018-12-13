@@ -157,7 +157,7 @@ public class CodeGeneratorModel {
 	public SimpleMethod getMethodNameAndArguments(String selection) {
 		String[] splittedSelection = selection.split("\\(");
 		if(splittedSelection.length == 2) {
-			String[] arguments = splittedSelection[1].replaceAll("\\);", "").split(",");
+			String[] arguments = splittedSelection[1].replaceAll("\\);", "").replaceAll("\\)", "").split(",");
 			List<Field> argumentsList = new ArrayList<>();
 			for(String argumentName : arguments) {
 				argumentsList.add(new Field("Object", argumentName.trim()));

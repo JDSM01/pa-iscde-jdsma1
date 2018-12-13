@@ -176,7 +176,7 @@ public class CodeGeneratorController implements CodeGeneratorService{
 			method +=  argument.getType() + " " + argument.getName() + ", ";
 		}
 
-		method = method.substring(0, method.length()-3);
+		method = method.substring(0, method.length()-2);
 		String methodEnd = ") { \n\t" + returnString + "\n" + "}\n";
 		return method + methodEnd;
 	}

@@ -227,10 +227,14 @@ public class CodeGeneratorView implements PidescoView{
 					String selection = codeGeneratorResponse.getSelection();
 					SimpleMethod method = model.getMethodNameAndArguments(selection);
 					if(method != null) {
+						String fileName = model.getFileNameWithoutExtension(file.getName());
+						parse(file, fileName);
 						parse(file, selection.replaceAll(";", "").replaceAll(" ", ""));
 						String methodType = model.getMethodType();
+						int offset = model.getConstructorEndOffset();
+						offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset;
 						String setter = currentCodeGeneratorService.generateMethod(AcessLevel.PRIVATE, false, methodType, method.getName(), method.getArguments());
-						javaService.insertText(file, setter, model.getConstructorEndOffset(), 0);
+						javaService.insertText(file, setter, offset + 1, 0);
 
 					}				
 				}
