@@ -1,3 +1,3 @@
-# Pidesco
-Pidesco stands for **P**edagogical **IDE** for **S**oftware **Co**mponents and consists of a toy IDE for didactic purposes, useful to exercise component-based software engineering. Pidesco is built on top of Equinox/OSGi, offering a very simple infrastructure for plugging in views and tools. This repository also contains a file system browser component (`pt.iscte.pidesco.projectbrowser`), as well as a basic Java code editor (`pt.iscte.pidesco.javaeditor`). Using these as a starting point, apprentices may develop other IDE components that integrate with them.
-
+# Pidesco Code Generator
+The purpose of this component is to incorporate in the pidesco ide the possibility to generate code by pressing the button corresponding to the generation function that the user wants. 
+It also provides an extension point to modify the way the code is generated for each function.
