@@ -6,7 +6,7 @@
          <meta.schema plugin="pt.iscte.pidesco.codegenerator" id="codeGeneration" name="CodeGeneration"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         [This extension point enables whoever extends it to give their implementation of each method]
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="codeGeneration" minOccurs="1" maxOccurs="3"/>
+            <element ref="codeGeneration" minOccurs="1" maxOccurs="1"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -52,14 +52,14 @@
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  Name of the extension
+                   [This is the name that will be used in GUI to represent your extension]
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The class that will extend
+                  [This is the class that will re-implement the methods]
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":pt.iscte.pidesco.codegenerator.service.CodeGeneratorService"/>
@@ -83,7 +83,7 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         [Build the strings in a different way that was not tought in the original service]
       </documentation>
    </annotation>
 

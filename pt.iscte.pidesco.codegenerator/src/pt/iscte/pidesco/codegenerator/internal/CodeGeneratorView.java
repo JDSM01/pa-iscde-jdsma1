@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,6 +26,13 @@ import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.IfType;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
+
+/**
+ * This class is responsible for handling everything related to the view. This includes clicks, selections, creation of visual
+ * objects and listeners.
+ * @author D01
+ *
+ */
 public class CodeGeneratorView implements PidescoView{
 	private final static String ORIGINAL_TAG = "original";
 	private final static int INITIAL_UNIQUE_NAME = 1;
@@ -51,13 +56,12 @@ public class CodeGeneratorView implements PidescoView{
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
 		BundleContext context = Activator.getContext();
-
+		
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		javaService = context.getService(serviceReference);
+		
 		model = new CodeGeneratorModel(javaService);
-		extensionServicesMap = new HashMap<>();
 		currentCodeGeneratorService = new CodeGeneratorController();
-		extensionServicesMap.put(ORIGINAL_TAG, currentCodeGeneratorService);
 		createButtons(viewArea);
 		setListeners();
 		createExtensions(viewArea);
@@ -234,13 +238,18 @@ public class CodeGeneratorView implements PidescoView{
 	}
 
 	private void createExtensions(Composite viewArea) {
-		IExtensionRegistry reg = Platform.getExtensionRegistry();
-		IConfigurationElement[] elements = reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGeneration");
+		IConfigurationElement[] elements = model.getExtensions();
 		if(elements.length > 0) {
+			extensionServicesMap = new HashMap<>();	//Create hashmap to handle the different services extensions
+			extensionServicesMap.put(ORIGINAL_TAG, currentCodeGeneratorService); //Saves the current service
+			
+			//Radio Button creation
 			Composite composite = new Composite(viewArea, SWT.NONE);
 			composite.setLayout(new RowLayout(SWT.HORIZONTAL));
 			new Label(composite, SWT.NONE).setText("Extensions: ");
 			createRadioButton(composite, ORIGINAL_TAG, true);
+			
+			//To avoid not unique extension names
 			List<String> extensionsNames = new ArrayList<>();
 			extensionsNames.add(ORIGINAL_TAG);
 			for(IConfigurationElement element : elements) {

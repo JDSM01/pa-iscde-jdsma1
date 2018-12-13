@@ -5,10 +5,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.ITextSelection;
 
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
-
+/**
+ * This class is responsible to give the view the required objects and information.
+ * @author D01
+ *
+ */
 public class CodeGeneratorModel {
 	private final JavaEditorServices javaService;
 	private int constructorEndOffset;
@@ -204,5 +211,10 @@ public class CodeGeneratorModel {
 	//Sets the offset of the last line of a certain file
 	public void setEndOfFileOffset(int endOfFile) {
 		this.endOfFile = endOfFile;
+	}
+
+	public IConfigurationElement[] getExtensions() {
+		IExtensionRegistry reg = Platform.getExtensionRegistry();
+		return reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGeneration");
 	}
 }

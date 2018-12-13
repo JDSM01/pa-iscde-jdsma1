@@ -4,6 +4,13 @@ import java.util.List;
 
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
 
+/**
+ * This class is the implementation of this component given service. This class is responsible to transform the input that the 
+ * view gives into what the view wants. This is the class that generates the code based on inputs from the view by giving 
+ * the necessary string to be inserted
+ * @author D01
+ *
+ */
 public class CodeGeneratorController implements CodeGeneratorService{
 
 	@Override public String generateSetter(String variableType, String variableName) {

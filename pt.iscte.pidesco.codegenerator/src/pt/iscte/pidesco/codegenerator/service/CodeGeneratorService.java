@@ -2,9 +2,14 @@ package pt.iscte.pidesco.codegenerator.service;
 
 import java.util.List;
 
-import pt.iscte.pidesco.codegenerator.Field;
-import pt.iscte.pidesco.codegenerator.Regex;
+import pt.iscte.pidesco.codegenerator.internal.Field;
+import pt.iscte.pidesco.codegenerator.internal.Regex;
 
+/**
+ * This is the service to be used by other components.
+ * @author D01
+ *
+ */
 public interface CodeGeneratorService {
 
 	public static final String JAVA = "JAVA"; 
