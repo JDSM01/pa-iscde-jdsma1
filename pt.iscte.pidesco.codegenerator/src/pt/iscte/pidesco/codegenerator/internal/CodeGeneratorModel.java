@@ -81,7 +81,7 @@ public class CodeGeneratorModel {
 
 	//Returns an object containing the opened file, the string of the ITextSelection and the sum of the offset and length 
 	//of the ITextSelection
-	public CodeGeneratorResponse getCodeGeneratorResponseWithOffset() {
+	public CodeGeneratorResponse getCodeGeneratorResponseWithLengthOffset() {
 		File file = getFile();
 		String selectionText = "";
 		int offset = 0;
@@ -133,7 +133,7 @@ public class CodeGeneratorModel {
 				return new Field(selectionSplitted[0].trim(), selectionSplitted[1].trim()); 
 			}
 		}
-		return null;
+		return new Field("","");
 	}
 
 	//Turns a selection into a list of fields (if possible), given a split String
@@ -164,7 +164,7 @@ public class CodeGeneratorModel {
 			}
 			return new SimpleMethod(splittedSelection[0].trim(), argumentsList);
 		}
-		return null;
+		return new SimpleMethod("", Collections.emptyList());
 	}
 
 	//Returns the ending offset of a constructor and erases the saved offset

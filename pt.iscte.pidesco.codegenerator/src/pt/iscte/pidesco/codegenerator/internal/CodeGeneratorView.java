@@ -33,6 +33,7 @@ import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
  */
 public class CodeGeneratorView implements PidescoView{
 	private final static String ORIGINAL_TAG = "original";
+	private final static String NO_FILE_OPENED_ERROR = "There's no open file";
 	private final static int INITIAL_UNIQUE_NAME = 1;
 	private JavaEditorServices javaService;
 	private CodeGeneratorService currentCodeGeneratorService;
@@ -49,18 +50,19 @@ public class CodeGeneratorView implements PidescoView{
 	private Button generateIfButton;
 	private Button generateVariableNameButton;
 	private Map<String, CodeGeneratorService> extensionServicesMap;
+	private Label label;
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
-
 		javaService = CodeGeneratorActivator.getInstance().getJavaEditorServices();
 		currentCodeGeneratorService = CodeGeneratorActivator.getInstance().getCodeGeneratorService();
-		
+
 		model = new CodeGeneratorModel(javaService);
 		createButtons(viewArea);
 		setListeners();
 		createExtensions(viewArea);
+		createErrorLabel(viewArea);
 	}
 
 	private SelectionAdapter setGetterListener() {
@@ -70,14 +72,15 @@ public class CodeGeneratorView implements PidescoView{
 				File file = codeGeneratorResponse.getFile();
 				if(file != null) {
 					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
-					if(field != null) {
-						String fileName = model.getFileNameWithoutExtension(file.getName());
-						parse(file, fileName, null);
-						String setter = currentCodeGeneratorService.generateGetter(field.getType(), field.getName());
-						int offset = model.getConstructorEndOffset();
-						offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
-						javaService.insertText(file, setter, offset, 0);
-					}				
+					String fileName = model.getFileNameWithoutExtension(file.getName());
+					parse(file, fileName, null);
+					String setter = currentCodeGeneratorService.generateGetter(field.getType(), field.getName());
+					int offset = model.getConstructorEndOffset();
+					offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
+					insertText(file, setter, offset, 0);
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
 				}
 			}
 		};
@@ -90,15 +93,15 @@ public class CodeGeneratorView implements PidescoView{
 				File file = codeGeneratorResponse.getFile();
 				if(file != null) {
 					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
-					if(field != null) {
-						String fileName = model.getFileNameWithoutExtension(file.getName());
-						parse(file, fileName, null);
-						String setter = currentCodeGeneratorService.generateSetter(field.getType(), field.getName());
-						int offset = model.getConstructorEndOffset();
-						offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
-						javaService.insertText(file, setter, offset, 0);
-
-					}				
+					String fileName = model.getFileNameWithoutExtension(file.getName());
+					parse(file, fileName, null);
+					String setter = currentCodeGeneratorService.generateSetter(field.getType(), field.getName());
+					int offset = model.getConstructorEndOffset();
+					offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
+					insertText(file, setter, offset, 0);
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
 				}
 			}
 		};
@@ -115,7 +118,10 @@ public class CodeGeneratorView implements PidescoView{
 					List<Field> fields = model.getTypeAndVariableNameToList(selection, ";");
 					String fileName = model.getFileNameWithoutExtension(file.getName());
 					String constructor = currentCodeGeneratorService.generateConstructor(fileName, fields);
-					javaService.insertText(file, constructor, model.getFieldEndOffset() + 1, 0);	
+					insertText(file, constructor, model.getFieldEndOffset() + 1, 0);	
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
 				}
 			}
 		};
@@ -129,18 +135,19 @@ public class CodeGeneratorView implements PidescoView{
 				if (file != null) {
 					String selection = response.getSelection();
 					List<Field> fields = model.getTypeAndVariableNameToList(selection,",");
-					if(!fields.isEmpty()) {
-						parse(file);
-						int offset = model.getFieldEndOffset();
-						String bindedField = currentCodeGeneratorService.generateField(AcessLevel.PRIVATE, false, true, fields);
-						insertBindedVariable(file, selection, response.getOffset(), fields);
-						if(offset == 1) {
-							javaService.insertLine(file, bindedField, response.getOffset() - 1);
-						}
-						else {
-							javaService.insertText(file, bindedField, offset, 0);
-						}
+					parse(file);
+					int offset = model.getFieldEndOffset();
+					String bindedField = currentCodeGeneratorService.generateField(AcessLevel.PRIVATE, false, true, fields);
+					insertBindedVariable(file, selection, response.getOffset(), fields);
+					if(offset == 1) {
+						insertLine(file, bindedField, response.getOffset() - 1);
 					}
+					else {
+						insertText(file, bindedField, offset, 0);
+					}
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
 				}
 			}
 		};
@@ -155,6 +162,9 @@ public class CodeGeneratorView implements PidescoView{
 					String selection = response.getSelection();
 					List<Field> fields = model.getTypeAndVariableNameToList(selection,",");
 					insertBindedVariable(file, selection, response.getOffset(), fields);
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
 				}
 			}
 		};
@@ -171,7 +181,10 @@ public class CodeGeneratorView implements PidescoView{
 					List<Field> fields = model.getTypeAndVariableNameToList(selection, ";");
 					String fileName = model.getFileNameWithoutExtension(file.getName());
 					String constructor = currentCodeGeneratorService.generateConstructorWithBinding(fileName, fields);
-					javaService.insertText(file, constructor, model.getFieldEndOffset() + 1, 0);	
+					insertText(file, constructor, model.getFieldEndOffset() + 1, 0);	
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
 				}
 			}
 		};
@@ -204,11 +217,14 @@ public class CodeGeneratorView implements PidescoView{
 	private SelectionAdapter setVariableNameListener() {
 		return new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				CodeGeneratorResponse response = model.getCodeGeneratorResponseWithOffset();
+				CodeGeneratorResponse response = model.getCodeGeneratorResponseWithLengthOffset();
 				File file = response.getFile();
 				if (file != null) {
 					String variableName = currentCodeGeneratorService.generateVariableName(response.getSelection(), CodeGeneratorService.JAVA, false);
-					javaService.insertText(file, variableName, response.getOffset() , 0);
+					insertText(file, variableName, response.getOffset(), 0);
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
 				}
 			}
 		};
@@ -222,16 +238,16 @@ public class CodeGeneratorView implements PidescoView{
 				if(file != null) {
 					String selection = codeGeneratorResponse.getSelection();
 					SimpleMethod method = model.getMethodNameAndArguments(selection);
-					if(method != null) {
-						String fileName = model.getFileNameWithoutExtension(file.getName());
-						parse(file, fileName, selection.replaceAll(";", "").replaceAll(" ", ""));
-						String methodType = model.getMethodType();
-						int offset = model.getConstructorEndOffset();
-						offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset;
-						String setter = currentCodeGeneratorService.generateMethod(AcessLevel.PRIVATE, false, methodType, method.getName(), method.getArguments());
-						javaService.insertText(file, setter, offset + 1, 0);
-
-					}				
+					String fileName = model.getFileNameWithoutExtension(file.getName());
+					parse(file, fileName, selection.replaceAll(";", "").replaceAll(" ", ""));
+					String methodType = model.getMethodType();
+					int offset = model.getConstructorEndOffset();
+					offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset;
+					String setter = currentCodeGeneratorService.generateMethod(AcessLevel.PRIVATE, false, methodType, method.getName(), method.getArguments());
+					insertText(file, setter, offset + 1, 0);
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
 				}
 			}
 		};
@@ -330,13 +346,20 @@ public class CodeGeneratorView implements PidescoView{
 		generateConstructorWithBindingButton.addSelectionListener(setConstructorWithBindingListnener());
 	}
 
+	private void createErrorLabel(Composite viewArea) {
+		Composite composite = new Composite(viewArea, SWT.NONE);
+		composite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		label = new Label(composite, SWT.NONE);
+		label.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
+	}
+
 	private void insertIf(IfType type) {
 		CodeGeneratorResponse response = model.getCodeGeneratorResponseWithDefaultOffset();
 		File file = response.getFile();
 		if (file != null) {
 			String selection = response.getSelection();
 			String generatedIf = currentCodeGeneratorService.generateIfCondition(selection, type);
-			javaService.insertText(file, generatedIf, response.getOffset(), selection.length());
+			insertText(file, generatedIf, response.getOffset(), selection.length());
 		}
 	}
 
@@ -348,9 +371,36 @@ public class CodeGeneratorView implements PidescoView{
 		else {
 			bindedVariable = currentCodeGeneratorService.generateBindedVariable(Arrays.asList(new Field("", selection)));
 		}
-		javaService.insertLine(file, bindedVariable, offset + 1);
+		insertLine(file, bindedVariable, offset + 1);
 	}
 
+	private void insertLine(File file, String generatedString, int offset) {
+		if(getError(generatedString) != null) {
+			setErrorMessage(getError(generatedString));
+		} else {
+			setErrorMessage("");
+			javaService.insertLine(file, generatedString, offset);
+		}
+	}
+
+	private void insertText(File file, String generatedString, int offset, int length) {
+		if(getError(generatedString) != null) {
+			setErrorMessage(getError(generatedString));
+		} else {
+			setErrorMessage("");
+			javaService.insertText(file, generatedString, offset, length);
+		}
+	}
+
+	private String getError(String generatedString) {
+		System.out.println(generatedString);
+		if(generatedString == null) {
+			return "Method not implemented";
+		} else if(generatedString.equals("")) {
+			return "Selection was not valid";
+		}
+		return null;
+	}
 
 	private void parse(File file) {
 		javaService.saveFile(file);
@@ -360,5 +410,12 @@ public class CodeGeneratorView implements PidescoView{
 	private void parse(File file, String methodSearchExpression, String variableSearchExpression) {
 		javaService.saveFile(file);
 		javaService.parseFile(file, new EditorVisitor(model, methodSearchExpression, variableSearchExpression));
+	}
+
+	private void setErrorMessage(String message) {
+		if(!label.getText().equals(message)) {
+			label.setText(message);
+			label.requestLayout();
+		}
 	}
 }

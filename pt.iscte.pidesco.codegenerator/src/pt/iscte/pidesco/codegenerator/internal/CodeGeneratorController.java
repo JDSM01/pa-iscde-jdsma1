@@ -14,7 +14,7 @@ import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
 public class CodeGeneratorController implements CodeGeneratorService{
 
 	@Override public String generateSetter(String variableType, String variableName) {
-		if(variableType != null && variableName != null) {
+		if(!variableType.equals("") && !variableName.equals("")) {
 			char c[] = variableName.toCharArray();
 			c[0] = Character.toUpperCase(c[0]);
 			String upperCasedVariableName = new String(c);
@@ -25,7 +25,7 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	}
 
 	@Override public String generateSetter(String variableType, String variableName, String methodName) {
-		if(variableType != null && variableName != null) {
+		if(!variableType.equals("") && !variableName.equals("")) {
 			return generateSetterString(variableType, variableName, methodName);
 		}
 		return "";
@@ -33,7 +33,7 @@ public class CodeGeneratorController implements CodeGeneratorService{
 
 
 	@Override public String generateGetter(String variableType, String variableName) {
-		if(variableType != null && variableName != null) {
+		if(!variableType.equals("") && !variableName.equals("")) {
 			char c[] = variableName.toCharArray();
 			c[0] = Character.toUpperCase(c[0]);
 			String upperCasedVariableName = new String(c);
@@ -44,7 +44,7 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	}
 
 	@Override public String generateGetter(String variableType, String variableName, String methodName) {
-		if(variableType != null && variableName != null) {
+		if(!variableType.equals("") && !variableName.equals("")) {
 			return generateGetterString(variableType, variableName, methodName);
 		}
 		return "";
@@ -163,28 +163,31 @@ public class CodeGeneratorController implements CodeGeneratorService{
 
 	private String generateMethodString(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue, String body) {
-		String staticString = isStatic ? "static " : "";
-		String acessLevelString = acessLevel == AcessLevel.PACKAGE_PRIVATE ? "" : acessLevel.toString().toLowerCase() + " ";
-		String returnTypeString = returnType == null ? "void" : returnType;
-		String returnString = "return null;";
-		if(returnValue != null && !returnValue.equals("")) {
-			returnString = "return " + returnValue + ";";
-		}else if(returnType.equals("int")) {
-			returnString = "return -1;";
+		if(!methodName.equals("")) {
+			String staticString = isStatic ? "static " : "";
+			String acessLevelString = acessLevel == AcessLevel.PACKAGE_PRIVATE ? "" : acessLevel.toString().toLowerCase() + " ";
+			String returnTypeString = returnType == null ? "void" : returnType;
+			String returnString = "return null;";
+			if(returnValue != null && !returnValue.equals("")) {
+				returnString = "return " + returnValue + ";";
+			}else if(returnType.equals("int")) {
+				returnString = "return -1;";
+			}
+			else if(returnType.equals("void")) {
+				returnString = "";
+			}
+			String method = acessLevelString + staticString + returnTypeString + " " + methodName + "(";
+			for(Field argument : arguments) {
+				method +=  argument.getType() + " " + argument.getName() + ", ";
+			}
+			if(body != null && !body.equals("")) {
+				body += "\n"; 
+			}
+			method = method.substring(0, method.length()-2);
+			String methodEnd = ") { \n\t" + body + returnString + "\n" + "}\n";
+			return method + methodEnd;
 		}
-		else if(returnType.equals("void")) {
-			returnString = "";
-		}
-		String method = acessLevelString + staticString + returnTypeString + " " + methodName + "(";
-		for(Field argument : arguments) {
-			method +=  argument.getType() + " " + argument.getName() + ", ";
-		}
-		if(body != null && !body.equals("")) {
-			body += "\n"; 
-		}
-		method = method.substring(0, method.length()-2);
-		String methodEnd = ") { \n\t" + body + returnString + "\n" + "}\n";
-		return method + methodEnd;
+		return "";
 	}
 
 	private String generateSetterString(String variableType, String variableName, String methodName) {
