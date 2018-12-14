@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator.internal;
+package pt.iscte.pidesco.codegenerator.wrappers;
 
 //An object containing the string to be replaced and the string to replace it
 public class Regex {

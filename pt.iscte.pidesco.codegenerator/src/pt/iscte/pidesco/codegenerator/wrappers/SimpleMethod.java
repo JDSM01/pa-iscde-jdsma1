@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator.internal;
+package pt.iscte.pidesco.codegenerator.wrappers;
 
 import java.util.List;
 

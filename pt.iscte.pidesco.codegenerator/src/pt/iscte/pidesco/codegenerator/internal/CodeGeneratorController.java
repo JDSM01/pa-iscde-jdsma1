@@ -3,6 +3,8 @@ package pt.iscte.pidesco.codegenerator.internal;
 import java.util.List;
 
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
+import pt.iscte.pidesco.codegenerator.wrappers.Field;
+import pt.iscte.pidesco.codegenerator.wrappers.Regex;
 
 /**
  * This class is the implementation of this component given service. This class is responsible to transform the input that the 

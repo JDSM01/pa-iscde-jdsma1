@@ -2,8 +2,8 @@ package pt.iscte.pidesco.codegenerator.service;
 
 import java.util.List;
 
-import pt.iscte.pidesco.codegenerator.internal.Field;
-import pt.iscte.pidesco.codegenerator.internal.Regex;
+import pt.iscte.pidesco.codegenerator.wrappers.Field;
+import pt.iscte.pidesco.codegenerator.wrappers.Regex;
 
 /**
  * This is the service to be used by other components.

@@ -10,6 +10,8 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.ITextSelection;
 
+import pt.iscte.pidesco.codegenerator.wrappers.Field;
+import pt.iscte.pidesco.codegenerator.wrappers.SimpleMethod;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 /**
  * This class is responsible to give the view the required objects and information.

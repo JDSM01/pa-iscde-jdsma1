@@ -21,6 +21,8 @@ import org.eclipse.swt.widgets.Label;
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.AcessLevel;
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.IfType;
+import pt.iscte.pidesco.codegenerator.wrappers.Field;
+import pt.iscte.pidesco.codegenerator.wrappers.SimpleMethod;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
@@ -393,7 +395,6 @@ public class CodeGeneratorView implements PidescoView{
 	}
 
 	private String getError(String generatedString) {
-		System.out.println(generatedString);
 		if(generatedString == null) {
 			return "Method not implemented";
 		} else if(generatedString.equals("")) {
