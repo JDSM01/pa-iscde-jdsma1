@@ -89,7 +89,7 @@ public class CodeGeneratorController implements CodeGeneratorService{
 		for(int i = 0; i < fields.size(); i++) {
 			Field field = fields.get(i);
 			text += "\t" + "this." + field.getName() + " = " + field.getName() + ";";
-			if(i < fields.size() - 1) {
+			if(i < fields.size() - 1) { //if last field
 				text += "\n";
 			}
 		}
@@ -169,30 +169,41 @@ public class CodeGeneratorController implements CodeGeneratorService{
 			String staticString = isStatic ? "static " : "";
 			String acessLevelString = acessLevel == AcessLevel.PACKAGE_PRIVATE ? "" : acessLevel.toString().toLowerCase() + " ";
 			String returnTypeString = returnType == null ? "void" : returnType;
-			String returnString = "return null;";
-			if(returnValue != null && !returnValue.equals("")) {
-				returnString = "return " + returnValue + ";";
-			}else if(returnType.equals("int")) {
-				returnString = "return -1;";
-			}
-			else if(returnType.equals("void")) {
-				returnString = "";
-			}
-			String method = acessLevelString + staticString + returnTypeString + " " + methodName + "(";
-			for(Field argument : arguments) {
-				method +=  argument.getType() + " " + argument.getName() + ", ";
-			}
 			if(body != null && !body.equals("")) {
 				body += "\n"; 
 			}
-			if(!arguments.isEmpty()) {
-				method = method.substring(0, method.length()-2);
-			}
+			String returnString = generateReturnString(returnValue, returnType);
+			String signature = acessLevelString + staticString + returnTypeString + " " + methodName + "(";
+			signature = generateArgumentsString(arguments, signature);
 			String methodEnd = ") { \n\t" + body + returnString + "\n" + "}\n";
-			return method + methodEnd;
+			return signature + methodEnd;
 		}
 		return "";
 	}
+
+	private String generateReturnString(String returnValue, String returnType) {
+		String returnString = "return null;";
+		if(returnValue != null && !returnValue.equals("")) {
+			returnString = "return " + returnValue + ";";
+		}else if(returnType.equals("int")) {
+			returnString = "return -1;";
+		}
+		else if(returnType.equals("void")) {
+			returnString = "";
+		}
+		return returnString;
+	}
+
+	private String generateArgumentsString(List<Field> arguments, String signature) {
+		for(Field argument : arguments) {
+			signature +=  argument.getType() + " " + argument.getName() + ", ";
+		}
+		if(!arguments.isEmpty()) {
+			signature = signature.substring(0, signature.length()-2);
+		}
+		return signature;
+	}
+
 
 	private String generateSetterString(String variableType, String variableName, String methodName) {
 		String setter = "\npublic " + "void " + methodName + "(" + variableType + " " + 
