@@ -312,20 +312,22 @@ public class CodeGeneratorView implements PidescoView{
 		}
 	}
 
+	//Returns an unique name for each extension so that there's no extensions with the same name
 	private String getUniqueName(List<String> extensionsNames, String name, int notUniqueNumber) {
 		String uniqueName = name;
 		for(String extensionName : extensionsNames) {
 			if(extensionName.equals(name)) {
 				if(notUniqueNumber != INITIAL_UNIQUE_NAME) {
-					name = name.substring(0, name.length() - String.valueOf(notUniqueNumber).length());
+					name = name.substring(0, name.length() - String.valueOf(notUniqueNumber - 1).length()); //removes previously added numbers
 				}
-				uniqueName = name + notUniqueNumber;
-				uniqueName = getUniqueName(extensionsNames, uniqueName, notUniqueNumber + 1);
+				uniqueName = name + notUniqueNumber; //Adds number to the name
+				uniqueName = getUniqueName(extensionsNames, uniqueName, notUniqueNumber + 1); //Checks if the new name is already being used
 			}
 		}
 		return uniqueName;
 	}
 
+	//Create and set the text of the buttons
 	private void createButtons(Composite viewArea) {
 		generateVariableNameButton = new Button(viewArea, SWT.PUSH);
 		generateVariableNameButton.setText("Generate Variable Name");
@@ -359,10 +361,11 @@ public class CodeGeneratorView implements PidescoView{
 		radioButton.setSelection(select);
 		radioButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				currentCodeGeneratorService = extensionServicesMap.get(name);
+				currentCodeGeneratorService = extensionServicesMap.get(name); //changes the service being used to generate the code
 			}});
 	}
 
+	//Adds listeners to every button created 
 	private void setListeners() {
 		generateVariableNameButton.addSelectionListener(setVariableNameListener());
 		generateIfButton.addSelectionListener(setIfListener());
@@ -378,6 +381,7 @@ public class CodeGeneratorView implements PidescoView{
 		generateConstructorWithBindingButton.addSelectionListener(setConstructorWithBindingListnener());
 	}
 
+	//Creates the label that will be responsible for showing any possible errors in the generation of code
 	private void createErrorLabel(Composite viewArea) {
 		Composite composite = new Composite(viewArea, SWT.NONE);
 		composite.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -406,6 +410,7 @@ public class CodeGeneratorView implements PidescoView{
 		insertLine(file, bindedVariable, offset + 1);
 	}
 
+	//Uses the JavaEditorServices to insert a string or set an error message if there's an error
 	private void insertLine(File file, String generatedString, int offset) {
 		if(getError(generatedString) != null) {
 			setErrorMessage(getError(generatedString));
@@ -415,6 +420,7 @@ public class CodeGeneratorView implements PidescoView{
 		}
 	}
 
+	//Uses the JavaEditorServices to insert a string or set an error message if there's an error
 	private void insertText(File file, String generatedString, int offset, int length) {
 		if(getError(generatedString) != null) {
 			setErrorMessage(getError(generatedString));
@@ -424,6 +430,7 @@ public class CodeGeneratorView implements PidescoView{
 		}
 	}
 
+	//Returns the correct error value depending on the value of the generatedString or null if there's no error
 	private String getError(String generatedString) {
 		if(generatedString == null) {
 			return "Method not implemented";
@@ -433,16 +440,19 @@ public class CodeGeneratorView implements PidescoView{
 		return null;
 	}
 
+	//Uses an implementation of ASTVisitor to search the specified file and set the necessary values in the model
 	private void parse(File file) {
 		javaService.saveFile(file);
 		javaService.parseFile(file, new EditorVisitor(model));
 	}
 
+	//Uses an implementation of ASTVisitor to search for a method and/or variable in the specified file and set the values in the model
 	private void parse(File file, String methodSearchExpression, String variableSearchExpression) {
 		javaService.saveFile(file);
 		javaService.parseFile(file, new EditorVisitor(model, methodSearchExpression, variableSearchExpression));
 	}
 
+	//Sets an error message in the view
 	private void setErrorMessage(String message) {
 		if(!label.getText().equals(message)) {
 			label.setText(message);
