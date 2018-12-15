@@ -157,12 +157,17 @@ public class CodeGeneratorModel {
 
 	//Turns a selection into a SimpleMethod(name and arguments) if possible
 	public SimpleMethod getMethodNameAndArguments(String selection) {
+		if(selection.equals("")) {
+			return new SimpleMethod("defaultMethod", Collections.emptyList());
+		}
 		String[] splittedSelection = selection.split("\\(");
 		if(splittedSelection.length == 2) {
 			String[] arguments = splittedSelection[1].replaceAll("\\);", "").replaceAll("\\)", "").split(",");
 			List<Field> argumentsList = new ArrayList<>();
 			for(String argumentName : arguments) {
-				argumentsList.add(new Field("Object", argumentName.trim()));
+				if(!argumentName.equals("")) {
+					argumentsList.add(new Field("Object", argumentName.trim()));
+				}
 			}
 			return new SimpleMethod(splittedSelection[0].trim(), argumentsList);
 		}

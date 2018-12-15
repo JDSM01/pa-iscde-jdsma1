@@ -185,7 +185,9 @@ public class CodeGeneratorController implements CodeGeneratorService{
 			if(body != null && !body.equals("")) {
 				body += "\n"; 
 			}
-			method = method.substring(0, method.length()-2);
+			if(!arguments.isEmpty()) {
+				method = method.substring(0, method.length()-2);
+			}
 			String methodEnd = ") { \n\t" + body + returnString + "\n" + "}\n";
 			return method + methodEnd;
 		}
