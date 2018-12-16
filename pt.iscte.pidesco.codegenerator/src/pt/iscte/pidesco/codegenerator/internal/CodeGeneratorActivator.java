@@ -3,6 +3,7 @@ package pt.iscte.pidesco.codegenerator.internal;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
@@ -11,6 +12,7 @@ public class CodeGeneratorActivator implements BundleActivator {
 
 	private CodeGeneratorService codeGeneratorService;
 	private JavaEditorServices javaService;
+	private ServiceRegistration<CodeGeneratorService> serviceRef;
 	private static CodeGeneratorActivator instance;
 
 
@@ -25,7 +27,7 @@ public class CodeGeneratorActivator implements BundleActivator {
 		ServiceReference<JavaEditorServices> serviceReference = bundleContext.getServiceReference(JavaEditorServices.class);
 		javaService = bundleContext.getService(serviceReference);
 		codeGeneratorService = new CodeGeneratorController();
-		bundleContext.registerService(CodeGeneratorService.class, codeGeneratorService, null);
+		serviceRef = bundleContext.registerService(CodeGeneratorService.class, codeGeneratorService, null);
 	}
 
 	public CodeGeneratorService getCodeGeneratorService() {
@@ -47,6 +49,7 @@ public class CodeGeneratorActivator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		instance = null;
+		serviceRef.unregister();
 		codeGeneratorService = null;
 		javaService = null;
 	}
