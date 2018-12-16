@@ -132,7 +132,7 @@ public class CodeGeneratorModel {
 		if(selection != null) {
 			String[] selectionSplitted = selection.split(" ");
 			if(selectionSplitted.length == 2) {
-				return new Field(selectionSplitted[0].trim(), selectionSplitted[1].trim()); 
+				return new Field(selectionSplitted[0].trim(), selectionSplitted[1].trim().replaceAll(";", "")); 
 			}
 		}
 		return new Field("","");
@@ -147,7 +147,8 @@ public class CodeGeneratorModel {
 				String[] splittedField = field.split(" ");
 				int length = splittedField.length;
 				if(length >= 2) {
-					fields.add(new Field(splittedField[length - 2].trim(), splittedField[length - 1].trim()));
+					fields.add(new Field(splittedField[length - 2].trim(), splittedField[length - 1].trim()
+							.replaceAll(";", "")));
 				}
 			}
 			return fields;
