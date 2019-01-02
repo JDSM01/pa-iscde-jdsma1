@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="helloview"
+         name="My view"
+         point="pt.iscte.pidesco.view">
+      <view
+            class="pt.iscte.pidesco.demo.TestView"
+            icon="prettysmile.png">
+      </view>
+   </extension>
+   <extension
+         id="codeGeneration"
+         name="CGS"
+         point="pt.iscte.pidesco.codegenerator.codeGeneration">
+      <codeGeneration
+            class="pt.iscte.pidesco.demo.CGS"
+            name="CGS">
+      </codeGeneration>
+   </extension>
+   <extension
+         id="codeGeneration2"
+         name="CGS"
+         point="pt.iscte.pidesco.codegenerator.codeGeneration">
+      <codeGeneration
+            class="pt.iscte.pidesco.demo.CGS2"
+            name="CGS">
+      </codeGeneration>
+   </extension>
+   <extension
+         id="codeGeneration3"
+         name="CGS"
+         point="pt.iscte.pidesco.codegenerator.codeGeneration">
+      <codeGeneration
+            class="pt.iscte.pidesco.demo.CGS3"
+            name="CGS">
+      </codeGeneration>
+   </extension>
+
+</plugin>
