@@ -1,3 +1,17 @@
 # Pidesco Code Generator
 The purpose of this component is to incorporate in the pidesco ide the possibility to generate code by pressing the button corresponding to the generation function that the user wants. 
-It also provides an extension point to modify the way the code is generated for each function.
+It provides the following services:
+* CodeStringGeneratorService (which is also the extension point) - This service is responsible for building the strings of the different functionalities of the project. It builds strings for:
+* * VariableName
+* * Ifs
+* * Binding Variables
+* * Constructors
+* * Constructors with binding variables
+* * Setter
+* * Getter
+* * Fields
+* * Method
+* CodeGeneratorService - This service is combination of the previous one and the insertion logic of the project. It generates and inserts a string in a pre-determined place (depending on the functionality used) or in a certain line or offset if it's specified. This service provides the same functionalities as the previous one with insertions customization such as line and offset.
+
+It provides the following extension point:
+* CodeStringGeneratorService: that can be extended in order to modify the way the code is generated for each function.
