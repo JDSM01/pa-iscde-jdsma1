@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator.service;
+package pt.iscte.pidesco.codegenerator.extensability;
 
 import java.util.List;
 
@@ -6,22 +6,22 @@ import pt.iscte.pidesco.codegenerator.wrappers.Field;
 import pt.iscte.pidesco.codegenerator.wrappers.Regex;
 
 /**
- * This is the service to be used by other components.
+ * This is the service to be used by other components. This service provides the necessary strings for the code generation
  * @author D01
  *
  */
-public interface CodeGeneratorService {
+public interface CodeStringGeneratorService {
 
 	/**
 	 * String used to specify the language to generate a variable name
 	 */
 	public static final String JAVA = "JAVA"; 
-	
+
 	/**
 	 * String used to specify the language to generate a variable name
 	 */
 	public static final String PYTHON = "PYTHON";
-	
+
 	/**
 	 * Generates the appropriate variable name based on a given String, language type and if it's static or not.
 	 * @param convertFrom the string to convert to a variable name
@@ -143,7 +143,7 @@ public interface CodeGeneratorService {
 	String generateField(AcessLevel acessLevel, boolean isStatic, boolean isFinal, List<Field> fields);
 
 	/**
-	 * Generates a field given the arguments (e.g. public static final type name)
+	 * Generates a method given the arguments
 	 * @param acessLevel enum of the different acessLevels that the field can have (public, private, protected, package-private)
 	 * @param isStatic is the field static?
 	 * @param returnType type of what the method will return
@@ -154,7 +154,7 @@ public interface CodeGeneratorService {
 	String generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName, List<Field> arguments);
 
 	/**
-	 * Generates a field given the arguments (e.g. public static final type name)
+	 * Generates a method given the arguments
 	 * @param acessLevel enum of the different acessLevels that the field can have (public, private, protected, package-private)
 	 * @param isStatic is the field static?
 	 * @param returnType type of what the method will return
@@ -168,7 +168,7 @@ public interface CodeGeneratorService {
 			List<Field> arguments, String returnValue);
 
 	/**
-	 * Generates a field given the arguments (e.g. public static final type name)
+	 * Generates a method given the arguments
 	 * @param acessLevel enum of the different acessLevels that the field can have (public, private, protected, package-private)
 	 * @param isStatic is the field static?
 	 * @param returnType type of what the method will return

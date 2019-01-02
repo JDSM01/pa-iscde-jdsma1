@@ -5,14 +5,16 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
+import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
 public class CodeGeneratorActivator implements BundleActivator {
 
-	private CodeGeneratorService codeGeneratorService;
+	private CodeStringGeneratorService codeGeneratorService;
 	private JavaEditorServices javaService;
-	private ServiceRegistration<CodeGeneratorService> serviceRef;
+	private ServiceRegistration<CodeStringGeneratorService> stringGeneratorServiceRef;
+	private ServiceRegistration<CodeGeneratorService> codeGeneratorServiceRef;
 	private static CodeGeneratorActivator instance;
 
 
@@ -27,10 +29,12 @@ public class CodeGeneratorActivator implements BundleActivator {
 		ServiceReference<JavaEditorServices> serviceReference = bundleContext.getServiceReference(JavaEditorServices.class);
 		javaService = bundleContext.getService(serviceReference);
 		codeGeneratorService = new CodeGeneratorController();
-		serviceRef = bundleContext.registerService(CodeGeneratorService.class, codeGeneratorService, null);
+		stringGeneratorServiceRef = bundleContext.registerService(CodeStringGeneratorService.class, codeGeneratorService, null);
+		codeGeneratorServiceRef = bundleContext.registerService(CodeGeneratorService.class, 
+				new CodeGeneratorServiceImpl(javaService, codeGeneratorService, new CodeGeneratorModel(javaService)), null);
 	}
 
-	public CodeGeneratorService getCodeGeneratorService() {
+	public CodeStringGeneratorService getCodeGeneratorService() {
 		return codeGeneratorService;
 	}
 
@@ -49,7 +53,8 @@ public class CodeGeneratorActivator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		instance = null;
-		serviceRef.unregister();
+		stringGeneratorServiceRef.unregister();
+		codeGeneratorServiceRef.unregister();
 		codeGeneratorService = null;
 		javaService = null;
 	}

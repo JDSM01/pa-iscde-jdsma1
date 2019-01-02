@@ -2,7 +2,7 @@ package pt.iscte.pidesco.codegenerator.internal;
 
 import java.util.List;
 
-import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
+import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
 import pt.iscte.pidesco.codegenerator.wrappers.Field;
 import pt.iscte.pidesco.codegenerator.wrappers.Regex;
 
@@ -13,7 +13,7 @@ import pt.iscte.pidesco.codegenerator.wrappers.Regex;
  * @author D01
  *
  */
-public class CodeGeneratorController implements CodeGeneratorService{
+public class CodeGeneratorController implements CodeStringGeneratorService{
 
 	@Override public String generateSetter(String variableType, String variableName) {
 		if(!variableType.equals("") && !variableName.equals("")) {
@@ -173,9 +173,9 @@ public class CodeGeneratorController implements CodeGeneratorService{
 				body += "\n"; 
 			}
 			String returnString = generateReturnString(returnValue, returnType);
-			String signature = acessLevelString + staticString + returnTypeString + " " + methodName + "(";
+			String signature = "\t" + acessLevelString + staticString + returnTypeString + " " + methodName + "(";
 			signature = generateArgumentsString(arguments, signature);
-			String methodEnd = ") { \n\t" + body + returnString + "\n" + "}\n";
+			String methodEnd = ") { \n\t\t" + body + returnString + "\n" + "\t}\n";
 			return signature + methodEnd;
 		}
 		return "";
@@ -185,10 +185,10 @@ public class CodeGeneratorController implements CodeGeneratorService{
 		String returnString = "return null;";
 		if(returnValue != null && !returnValue.equals("")) {
 			returnString = "return " + returnValue + ";";
-		}else if(returnType.equals("int")) {
+		}else if(returnType != null && returnType.equals("int")) {
 			returnString = "return -1;";
 		}
-		else if(returnType.equals("void")) {
+		else if(returnType != null && returnType.equals("void")) {
 			returnString = "";
 		}
 		return returnString;
@@ -206,18 +206,18 @@ public class CodeGeneratorController implements CodeGeneratorService{
 
 
 	private String generateSetterString(String variableType, String variableName, String methodName) {
-		String setter = "\npublic " + "void " + methodName + "(" + variableType + " " + 
-				variableName+ "){\n\t" + "this." + variableName + " = " + variableName + ";\n" + "}\n";
+		String setter = "\n\tpublic " + "void " + methodName + "(" + variableType + " " + 
+				variableName+ "){\n\t\t" + "this." + variableName + " = " + variableName + ";\n" + "\t}\n";
 		return setter;
 	}
 
 	private String generateGetterString(String variableType, String variableName, String methodName) {
-		String getter = "\npublic " + variableType + " " + methodName + "(){\n\t" + "return " + variableName + ";\n" + "}\n";
+		String getter = "\n\tpublic " + variableType + " " + methodName + "(){\n\t\t" + "return " + variableName + ";\n" + "\t}\n";
 		return getter;
 	}
 
 	private String generateConstructorString(String className, List<Field> arguments) {
-		String constructor = "\npublic " + className + "(";
+		String constructor = "\n\tpublic " + className + "(";
 		for(Field field : arguments) {
 			constructor += field.getType() + " " + field.getName() + ", ";
 		}
@@ -249,7 +249,7 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	private String generateSimpleConstructorString(String className, List<Field> arguments, String input) {
 		if(className != null) {
 			String constructor = generateConstructorString(className, arguments);
-			String constructorEnd = ") { \n\t" + input + "\n}\n";
+			String constructorEnd = ") { \n\t\t" + input + "\n\t}\n";
 			return constructor + constructorEnd;
 		}
 		return "";
@@ -258,9 +258,9 @@ public class CodeGeneratorController implements CodeGeneratorService{
 	private String generateConstructorWithBindString(String className, List<Field> arguments, String input) {
 		if(className != null) {
 			String constructor = generateConstructorString(className, arguments);
-			constructor += ") { \n";
+			constructor += ") { \n\t";
 			constructor += generateBindedVariable(arguments);
-			String constructorEnd = input + "\n}\n";
+			String constructorEnd = input + "\n\t}\n";
 			return constructor + constructorEnd;
 		}
 		return "";

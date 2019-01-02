@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
-import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.AcessLevel;
-import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService.IfType;
+import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
+import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
+import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.IfType;
 import pt.iscte.pidesco.codegenerator.wrappers.Field;
 import pt.iscte.pidesco.codegenerator.wrappers.SimpleMethod;
 import pt.iscte.pidesco.extensibility.PidescoView;
@@ -39,7 +39,7 @@ public class CodeGeneratorView implements PidescoView{
 	private final static String NO_FILE_OPENED_ERROR = "There's no open file";
 	private final static int INITIAL_UNIQUE_NAME = 1;
 	private JavaEditorServices javaService;
-	private CodeGeneratorService currentCodeGeneratorService;
+	private CodeStringGeneratorService currentCodeGeneratorService;
 	private CodeGeneratorModel model;
 	private Button generateSetterButton;
 	private Button generateGetterButton;
@@ -52,7 +52,7 @@ public class CodeGeneratorView implements PidescoView{
 	private Button generateIfNotNullButton;
 	private Button generateIfButton;
 	private Button generateVariableNameButton;
-	private Map<String, CodeGeneratorService> extensionServicesMap;
+	private Map<String, CodeStringGeneratorService> extensionServicesMap;
 	private Label label;
 	private Button generateGetterSetterButton;
 
@@ -77,10 +77,9 @@ public class CodeGeneratorView implements PidescoView{
 				if(file != null) {
 					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
 					String fileName = model.getFileNameWithoutExtension(file.getName());
-					parse(file, fileName, null);
+					model.parse(file, fileName, null);
 					String setter = currentCodeGeneratorService.generateGetter(field.getType(), field.getName());
-					int offset = model.getConstructorEndOffset();
-					offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
+					int offset = getCorrectOffset(model.getConstructorEndOffset());
 					insertText(file, setter, offset, 0);
 				}
 				else {
@@ -98,10 +97,9 @@ public class CodeGeneratorView implements PidescoView{
 				if(file != null) {
 					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
 					String fileName = model.getFileNameWithoutExtension(file.getName());
-					parse(file, fileName, null);
+					model.parse(file, fileName, null);
 					String setter = currentCodeGeneratorService.generateSetter(field.getType(), field.getName());
-					int offset = model.getConstructorEndOffset();
-					offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
+					int offset = getCorrectOffset(model.getConstructorEndOffset());
 					insertText(file, setter, offset, 0);
 				}
 				else {
@@ -119,11 +117,10 @@ public class CodeGeneratorView implements PidescoView{
 				if(file != null) {
 					Field field = model.getTypeAndVariableName(codeGeneratorResponse.getSelection());
 					String fileName = model.getFileNameWithoutExtension(file.getName());
-					parse(file, fileName, null);
+					model.parse(file, fileName, null);
 					String setter = currentCodeGeneratorService.generateSetter(field.getType(), field.getName());
 					String getter = currentCodeGeneratorService.generateGetter(field.getType(), field.getName());
-					int offset = model.getConstructorEndOffset();
-					offset = offset == 0 ? model.getEndOfFileOffset() - 2 : offset + 1;
+					int offset = getCorrectOffset(model.getConstructorEndOffset());
 					insertText(file, setter, offset, 0);
 					insertText(file, getter, offset, 0);
 				}
@@ -140,12 +137,12 @@ public class CodeGeneratorView implements PidescoView{
 				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
 				File file = codeGeneratorResponse.getFile();
 				if(file != null) {
-					parse(file);
+					model.parse(file);
 					String selection = codeGeneratorResponse.getSelection();
 					List<Field> fields = model.getTypeAndVariableNameToList(selection, ";");
 					String fileName = model.getFileNameWithoutExtension(file.getName());
 					String constructor = currentCodeGeneratorService.generateConstructor(fileName, fields);
-					insertText(file, constructor, model.getFieldEndOffset() + 1, 0);	
+					insertAfterField(file, constructor);
 				}
 				else {
 					setErrorMessage(NO_FILE_OPENED_ERROR);
@@ -162,16 +159,10 @@ public class CodeGeneratorView implements PidescoView{
 				if (file != null) {
 					String selection = response.getSelection();
 					List<Field> fields = model.getTypeAndVariableNameToList(selection,",");
-					parse(file);
-					int lastFieldEndOffset = model.getFieldEndOffset();
+					model.parse(file);
 					String bindedField = currentCodeGeneratorService.generateField(AcessLevel.PRIVATE, false, true, fields);
 					insertBindedVariable(file, selection, response.getOffset(), fields);
-					if(lastFieldEndOffset == 1) {
-						insertLine(file, bindedField, response.getOffset() - 1);
-					}
-					else {
-						insertText(file, bindedField, lastFieldEndOffset, 0);
-					}
+					insertAfterField(file, bindedField);
 				}
 				else {
 					setErrorMessage(NO_FILE_OPENED_ERROR);
@@ -203,12 +194,12 @@ public class CodeGeneratorView implements PidescoView{
 				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
 				File file = codeGeneratorResponse.getFile();
 				if(file != null) {
-					parse(file);
+					model.parse(file);
 					String selection = codeGeneratorResponse.getSelection();
 					List<Field> fields = model.getTypeAndVariableNameToList(selection, ";");
 					String fileName = model.getFileNameWithoutExtension(file.getName());
 					String constructor = currentCodeGeneratorService.generateConstructorWithBinding(fileName, fields);
-					insertText(file, constructor, model.getFieldEndOffset() + 1, 0);	
+					insertAfterField(file, constructor);	
 				}
 				else {
 					setErrorMessage(NO_FILE_OPENED_ERROR);
@@ -248,7 +239,7 @@ public class CodeGeneratorView implements PidescoView{
 				File file = response.getFile();
 				if (file != null) {
 					String variableName = currentCodeGeneratorService.generateVariableName(response.getSelection(), 
-							CodeGeneratorService.JAVA, false);
+							CodeStringGeneratorService.JAVA, false);
 					insertText(file, variableName, response.getOffset(), 0);
 				}
 				else {
@@ -267,10 +258,9 @@ public class CodeGeneratorView implements PidescoView{
 					String selection = codeGeneratorResponse.getSelection();
 					SimpleMethod method = model.getMethodNameAndArguments(selection);
 					String fileName = model.getFileNameWithoutExtension(file.getName());
-					parse(file, fileName, selection.replaceAll(";", "").replaceAll(" ", ""));
+					model.parse(file, fileName, selection.replaceAll(";", "").replaceAll(" ", ""));
 					String methodType = model.getMethodType();
-					int lastConstructorEndOffset = model.getConstructorEndOffset();
-					lastConstructorEndOffset = lastConstructorEndOffset == 0 ? model.getEndOfFileOffset() - 1 : lastConstructorEndOffset +1;
+					int lastConstructorEndOffset = getCorrectOffset(model.getConstructorEndOffset());
 					String setter = currentCodeGeneratorService.generateMethod(AcessLevel.PRIVATE, false, methodType, 
 							method.getName(), method.getArguments());
 					insertText(file, setter, lastConstructorEndOffset, 0);
@@ -302,7 +292,7 @@ public class CodeGeneratorView implements PidescoView{
 				String uniqueName = getUniqueName(extensionsNames, name, INITIAL_UNIQUE_NAME);
 				extensionsNames.add(uniqueName);
 				try {
-					CodeGeneratorService codeGeneratorController = (CodeGeneratorService) element.createExecutableExtension("class");
+					CodeStringGeneratorService codeGeneratorController = (CodeStringGeneratorService) element.createExecutableExtension("class");
 					extensionServicesMap.put(uniqueName, codeGeneratorController);
 					createRadioButton(composite, uniqueName, false);
 				} catch (CoreException e1) {
@@ -389,6 +379,12 @@ public class CodeGeneratorView implements PidescoView{
 		label.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
 	}
 
+	//Gets end of file offset if there's no constructor
+	private int getCorrectOffset(int constructorEndOffset) {
+		int offset = constructorEndOffset == 0 ? model.getEndOfFileOffset() - 1 : constructorEndOffset + 2;
+		return offset;
+	}
+
 	private void insertIf(IfType type) {
 		CodeGeneratorResponse response = model.getCodeGeneratorResponseWithDefaultOffset();
 		File file = response.getFile();
@@ -411,12 +407,12 @@ public class CodeGeneratorView implements PidescoView{
 	}
 
 	//Uses the JavaEditorServices to insert a string or set an error message if there's an error
-	private void insertLine(File file, String generatedString, int offset) {
+	private void insertLine(File file, String generatedString, int line) {
 		if(getError(generatedString) != null) {
 			setErrorMessage(getError(generatedString));
 		} else {
 			setErrorMessage("");
-			javaService.insertLine(file, generatedString, offset);
+			javaService.insertLine(file, generatedString, line);
 		}
 	}
 
@@ -430,6 +426,15 @@ public class CodeGeneratorView implements PidescoView{
 		}
 	}
 
+	private void insertTextAtCursor(String generatedString) {
+		if(getError(generatedString) != null) {
+			setErrorMessage(getError(generatedString));
+		} else {
+			setErrorMessage("");
+			javaService.insertTextAtCursor(generatedString);
+		}
+	}
+
 	//Returns the correct error value depending on the value of the generatedString or null if there's no error
 	private String getError(String generatedString) {
 		if(generatedString == null) {
@@ -440,23 +445,23 @@ public class CodeGeneratorView implements PidescoView{
 		return null;
 	}
 
-	//Uses an implementation of ASTVisitor to search the specified file and set the necessary values in the model
-	private void parse(File file) {
-		javaService.saveFile(file);
-		javaService.parseFile(file, new EditorVisitor(model));
-	}
-
-	//Uses an implementation of ASTVisitor to search for a method and/or variable in the specified file and set the values in the model
-	private void parse(File file, String methodSearchExpression, String variableSearchExpression) {
-		javaService.saveFile(file);
-		javaService.parseFile(file, new EditorVisitor(model, methodSearchExpression, variableSearchExpression));
-	}
-
 	//Sets an error message in the view
 	private void setErrorMessage(String message) {
 		if(!label.getText().equals(message)) {
 			label.setText(message);
 			label.requestLayout();
+		}
+	}
+
+	//Inserts a string after the last field or after the class initial line 
+	//if there's no fields or at the cursor position if there's no class statement
+	private void insertAfterField(File file, String constructor) {
+		int fieldEndOffset = model.getFieldEndLine();
+		int offset = fieldEndOffset == 0 ? model.getClassInitLine() : fieldEndOffset;
+		if(offset == 0) {
+			insertTextAtCursor(constructor);
+		} else {
+			insertLine(file, constructor, offset);	
 		}
 	}
 }

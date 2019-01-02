@@ -21,9 +21,11 @@ import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 public class CodeGeneratorModel {
 	private final JavaEditorServices javaService;
 	private int constructorEndOffset;
-	private int fieldEndOffset;
+	private int fieldEndLine;
 	private String methodType;
 	private int endOfFile;
+	private int variableOffset;
+	private int startLine;
 
 	public CodeGeneratorModel(JavaEditorServices javaService) {
 		this.javaService = javaService;
@@ -183,20 +185,28 @@ public class CodeGeneratorModel {
 	}
 
 	//Sets the ending offset of a constructor
-	public void setConstructorEndOffset(int constructorEndLine) {
-		this.constructorEndOffset = constructorEndLine;
+	public void setConstructorEndOffset(int constructorEndOffset) {
+		this.constructorEndOffset = constructorEndOffset;
 	}
 
-	//Returns the offset of the last field and erases the saved offset
-	public int getFieldEndOffset() {
-		int offset = fieldEndOffset;
-		fieldEndOffset = 0;
-		return offset;
+	//Returns the line of the last field and erases the saved offset
+	public int getFieldEndLine() {
+		int line = fieldEndLine;
+		fieldEndLine = 0;
+		return line;
 	}
 
 	//Sets the offset of the last field
-	public void setFieldEndOffset(int fieldEndLine) {
-		this.fieldEndOffset = fieldEndLine;
+	public void setFieldEndLine(int fieldEndLine) {
+		this.fieldEndLine = fieldEndLine;
+	}
+
+	public int getClassInitLine() {
+		return startLine;
+	}
+
+	public void setClassInitLine(int startLine) {
+		this.startLine = startLine;
 	}
 
 	//Returns the type of a certain method and erases the saved method type
@@ -223,6 +233,37 @@ public class CodeGeneratorModel {
 		this.endOfFile = endOfFile;
 	}
 
+	//Returns the offset of the searched variable
+	public int getVariableOffset() {
+		int offset = variableOffset;
+		variableOffset = 0;
+		return offset;
+	}
+
+	//Sets the offset of the searched variable
+	public void setVariableOffset(int variableOffset) {
+		this.variableOffset = variableOffset;
+	}
+
+	//Uses an implementation of ASTVisitor to search the specified file and set the necessary values in the model
+	public void parse(File file) {
+		javaService.saveFile(file);
+		javaService.parseFile(file, new EditorVisitor(this));
+	}
+
+	//Uses an implementation of ASTVisitor to search for a method and/or variable in the specified file and set the values in the model
+	public void parse(File file, String methodSearchExpression, String variableSearchExpression) {
+		javaService.saveFile(file);
+		javaService.parseFile(file, new EditorVisitor(this, methodSearchExpression, variableSearchExpression));
+	}
+
+	//Uses an implementation of ASTVisitor to search for a method and/or variable in the specified file and set the values in the model
+	public void parse(File file, String methodSearchExpression, String variableSearchExpression, int line) {
+		javaService.saveFile(file);
+		javaService.parseFile(file, new EditorVisitor(this, methodSearchExpression, variableSearchExpression, line));
+	}
+
+	//Gets the extensions of the project
 	public IConfigurationElement[] getExtensions() {
 		IExtensionRegistry reg = Platform.getExtensionRegistry();
 		return reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGeneration");

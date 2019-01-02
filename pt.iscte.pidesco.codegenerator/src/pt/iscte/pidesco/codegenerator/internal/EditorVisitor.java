@@ -1,7 +1,9 @@
 package pt.iscte.pidesco.codegenerator.internal;
 
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -17,6 +19,7 @@ public class EditorVisitor extends ASTVisitor{
 	private final CodeGeneratorModel codeGeneratorModel;
 	private final String methodSearchExpression;
 	private final String variableSearchExpression;
+	private final int line;
 
 	/**
 	 * This constructor is used in case there's no need to search for a specific term
@@ -26,6 +29,7 @@ public class EditorVisitor extends ASTVisitor{
 		this.codeGeneratorModel = codeGeneratorModel;
 		this.methodSearchExpression = null;
 		this.variableSearchExpression = null;
+		this.line = -1;
 	}
 
 	/**
@@ -38,11 +42,32 @@ public class EditorVisitor extends ASTVisitor{
 		this.codeGeneratorModel = codeGeneratorModel;
 		this.methodSearchExpression = methodSearchExpression;
 		this.variableSearchExpression = variableSearchExpression;
+		this.line = -1;
+	}
+
+	/**
+	 * This constructor is used in case there's the need to search for a specific term in a specific line
+	 * @param codeGeneratorModel Model where the visitor will set the information
+	 * @param variableSearchExpression expression to be used by the ASTVisitor to search for a specific variable
+	 * @param methodSearchExpression expression to be used by the ASTVisitor to search for a specific method
+	 * @param line the line which the visitor will check before setting the model information
+	 */ 
+	public EditorVisitor(CodeGeneratorModel codeGeneratorModel, String methodSearchExpression, String variableSearchExpression, 
+			int line) {
+		this.codeGeneratorModel = codeGeneratorModel;
+		this.methodSearchExpression = methodSearchExpression;
+		this.variableSearchExpression = variableSearchExpression;
+		this.line = line;
+	}
+
+	private int sourceLine(ASTNode node) {
+		return ((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition());
 	}
 
 	//visits class
 	@Override
 	public boolean visit(TypeDeclaration node) {
+		codeGeneratorModel.setClassInitLine(sourceLine(node));
 		codeGeneratorModel.setEndOfFileOffset(node.getStartPosition() + node.getLength());
 		return true;
 	}
@@ -59,8 +84,7 @@ public class EditorVisitor extends ASTVisitor{
 	// visits attributes
 	@Override
 	public boolean visit(FieldDeclaration node) {
-		int endOffset = node.getStartPosition() + node.getLength();
-		codeGeneratorModel.setFieldEndOffset(endOffset);
+		codeGeneratorModel.setFieldEndLine(sourceLine(node));
 		return true; 
 	}
 
@@ -76,9 +100,12 @@ public class EditorVisitor extends ASTVisitor{
 			}
 			if(initializer.equals(variableSearchExpression) && node.getParent() instanceof FieldDeclaration) {
 				expressionType = ((FieldDeclaration) node.getParent()).getType().toString();
-				codeGeneratorModel.setMethodType(expressionType);
 			}else {
-				codeGeneratorModel.setMethodType("void");
+				expressionType = "void";
+			}
+			codeGeneratorModel.setMethodType(expressionType);
+			if(line == -1 || line == sourceLine(node)) {
+				codeGeneratorModel.setVariableOffset(node.getStartPosition() + expressionType.length());
 			}
 			return true;
 		}
