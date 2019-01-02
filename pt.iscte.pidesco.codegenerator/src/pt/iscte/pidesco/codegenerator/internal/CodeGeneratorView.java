@@ -55,6 +55,7 @@ public class CodeGeneratorView implements PidescoView{
 	private Map<String, CodeStringGeneratorService> extensionServicesMap;
 	private Label label;
 	private Button generateGetterSetterButton;
+	private Button generateFieldButton;
 
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
@@ -187,6 +188,26 @@ public class CodeGeneratorView implements PidescoView{
 			}
 		};
 	}
+
+	private SelectionListener setFieldListener() {
+		return new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CodeGeneratorResponse response = model.getCodeGeneratorResponseWithDefaultOffset();
+				File file = response.getFile();
+				if (file != null) {
+					String selection = response.getSelection();
+					List<Field> fields = model.getTypeAndVariableNameToList(selection,",");
+					model.parse(file);
+					String bindedField = currentCodeGeneratorService.generateField(AcessLevel.PRIVATE, false, true, fields);
+					insertAfterField(file, bindedField);
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
+				}
+			}
+		};
+	}
+
 
 	private SelectionAdapter setConstructorWithBindingListnener() {
 		return new SelectionAdapter() {
@@ -343,6 +364,8 @@ public class CodeGeneratorView implements PidescoView{
 		generateMethodButton.setText("Create Method");
 		generateConstructorWithBindingButton = new Button(viewArea, SWT.PUSH);
 		generateConstructorWithBindingButton.setText("Create constructor and bind");
+		generateFieldButton = new Button(viewArea, SWT.PUSH);
+		generateFieldButton.setText("Create Field");
 	}
 
 	private void createRadioButton(Composite composite, String name, boolean select) {
@@ -369,6 +392,7 @@ public class CodeGeneratorView implements PidescoView{
 		generateGetterSetterButton.addSelectionListener(setGetterSetterListener());
 		generateMethodButton.addSelectionListener(setMethodListener());
 		generateConstructorWithBindingButton.addSelectionListener(setConstructorWithBindingListnener());
+		generateFieldButton.addSelectionListener(setFieldListener());
 	}
 
 	//Creates the label that will be responsible for showing any possible errors in the generation of code
@@ -453,8 +477,8 @@ public class CodeGeneratorView implements PidescoView{
 		}
 	}
 
-	//Inserts a string after the last field or after the class initial line 
-	//if there's no fields or at the cursor position if there's no class statement
+	//Inserts a string after the last field, or after the class initial line 
+	//if there's no fields, or at the cursor position if there's no class statement
 	private void insertAfterField(File file, String constructor) {
 		int fieldEndOffset = model.getFieldEndLine();
 		int offset = fieldEndOffset == 0 ? model.getClassInitLine() : fieldEndOffset;
