@@ -432,8 +432,9 @@ public class CodeGeneratorView implements PidescoView{
 
 	//Uses the JavaEditorServices to insert a string or set an error message if there's an error
 	private void insertLine(File file, String generatedString, int line) {
-		if(getError(generatedString) != null) {
-			setErrorMessage(getError(generatedString));
+		String error = model.getError(generatedString, line);
+		if(error != null) {
+			setErrorMessage(error);
 		} else {
 			setErrorMessage("");
 			javaService.insertLine(file, generatedString, line);
@@ -442,31 +443,13 @@ public class CodeGeneratorView implements PidescoView{
 
 	//Uses the JavaEditorServices to insert a string or set an error message if there's an error
 	private void insertText(File file, String generatedString, int offset, int length) {
-		if(getError(generatedString) != null) {
-			setErrorMessage(getError(generatedString));
+		String error = model.getError(generatedString, offset);
+		if(error != null) {
+			setErrorMessage(error);
 		} else {
 			setErrorMessage("");
 			javaService.insertText(file, generatedString, offset, length);
 		}
-	}
-
-	private void insertTextAtCursor(String generatedString) {
-		if(getError(generatedString) != null) {
-			setErrorMessage(getError(generatedString));
-		} else {
-			setErrorMessage("");
-			javaService.insertTextAtCursor(generatedString);
-		}
-	}
-
-	//Returns the correct error value depending on the value of the generatedString or null if there's no error
-	private String getError(String generatedString) {
-		if(generatedString == null) {
-			return "Method not implemented";
-		} else if(generatedString.equals("")) {
-			return "Selection was not valid";
-		}
-		return null;
 	}
 
 	//Sets an error message in the view
@@ -477,15 +460,11 @@ public class CodeGeneratorView implements PidescoView{
 		}
 	}
 
-	//Inserts a string after the last field, or after the class initial line 
-	//if there's no fields, or at the cursor position if there's no class statement
+	//Inserts a string after the last field, or after the class initial line if there are no fields
 	private void insertAfterField(File file, String constructor) {
 		int fieldEndOffset = model.getFieldEndLine();
 		int offset = fieldEndOffset == 0 ? model.getClassInitLine() : fieldEndOffset;
-		if(offset == 0) {
-			insertTextAtCursor(constructor);
-		} else {
-			insertLine(file, constructor, offset);	
-		}
+		insertLine(file, constructor, offset);	
+
 	}
 }

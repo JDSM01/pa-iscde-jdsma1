@@ -268,4 +268,17 @@ public class CodeGeneratorModel {
 		IExtensionRegistry reg = Platform.getExtensionRegistry();
 		return reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGeneration");
 	}
+
+	//Returns the correct error value depending on the value of the generatedString and position or null if there's no error
+	public String getError(String generatedString, int position) {
+		if(position == 0) {
+			return "No class statement found";
+		}
+		else if(generatedString == null) {
+			return "Method not implemented";
+		} else if(generatedString.equals("")) {
+			return "Selection was not valid";
+		}
+		return null;
+	}
 }
