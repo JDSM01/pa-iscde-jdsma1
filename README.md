@@ -14,4 +14,5 @@ It provides the following services:
 * CodeGeneratorService - This service is combination of the previous one and the insertion logic of the project. It generates and inserts a string in a pre-determined place (depending on the functionality used) or in a certain line or offset if it's specified. This service provides the same functionalities as the previous one with insertions customization such as line and offset.
 
 It provides the following extension point:
-* CodeStringGeneratorService: that can be extended in order to modify the way the code is generated for each function.
+* CodeGenerationRelacement: Allows the person who extends it to replace the way the strings are generated. To use this extension a name and an implementation of CodeStringGeneratorService.java must be provided.
+* CodeGenerationAdd: Allows the person who extends it to add new functionalities. To use this extension an implementation of CodeGeneratorFunctionAddExtension.java must be provided.
