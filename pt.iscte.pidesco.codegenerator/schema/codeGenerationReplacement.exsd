@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="pt.iscte.pidesco.codegenerator" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="pt.iscte.pidesco.codegenerator.codeGenerationReplacement" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="pt.iscte.pidesco.codegenerator" id="codeGeneration" name="CodeGeneration"/>
+         <meta.schema plugin="pt.iscte.pidesco.codegenerator.codeGenerationReplacement" id="codeGenerationReplacement" name="CodeGenerationReplacement"/>
       </appinfo>
       <documentation>
          [This extension point enables whoever extends it to give their implementation of each method]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="codeGeneration" minOccurs="1" maxOccurs="1"/>
+            <element ref="codeGenerationReplacement"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,12 +47,12 @@
       </complexType>
    </element>
 
-   <element name="codeGeneration">
+   <element name="codeGenerationReplacement">
       <complexType>
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                   [This is the name that will be used in GUI to represent your extension]
+                  [This is the name that will be used in GUI to represent your extension]
                </documentation>
             </annotation>
          </attribute>

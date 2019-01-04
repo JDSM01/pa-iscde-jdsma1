@@ -11,31 +11,39 @@
       </view>
    </extension>
    <extension
-         id="codeGeneration"
+         id="codeGenerationReplacement"
          name="CGS"
-         point="pt.iscte.pidesco.codegenerator.codeGeneration">
-      <codeGeneration
+         point="pt.iscte.pidesco.codegenerator.codeGenerationReplacement">
+      <codeGenerationReplacement
             class="pt.iscte.pidesco.demo.CGS"
             name="CGS">
-      </codeGeneration>
+      </codeGenerationReplacement>
    </extension>
    <extension
-         id="codeGeneration2"
+         id="codeGenerationReplacement2"
          name="CGS"
-         point="pt.iscte.pidesco.codegenerator.codeGeneration">
-      <codeGeneration
+         point="pt.iscte.pidesco.codegenerator.codeGenerationReplacement">
+      <codeGenerationReplacement
             class="pt.iscte.pidesco.demo.CGS2"
             name="CGS">
-      </codeGeneration>
+      </codeGenerationReplacement>
    </extension>
    <extension
-         id="codeGeneration3"
+         id="codeGenerationReplacement3"
          name="CGS"
-         point="pt.iscte.pidesco.codegenerator.codeGeneration">
-      <codeGeneration
-            class="pt.iscte.pidesco.demo.CGS3"
+         point="pt.iscte.pidesco.codegenerator.codeGenerationReplacement">
+      <codeGenerationReplacement
+            class="pt.iscte.pidesco.demo.CGS"
             name="CGS">
-      </codeGeneration>
+      </codeGenerationReplacement>
+   </extension>
+   <extension
+         id="CGSAdd"
+         name="CGSAdd"
+         point="pt.iscte.pidesco.codegenerator.codeGenerationAdd">
+      <codeGenerationAdd
+            class="pt.iscte.pidesco.demo.AddExtensionTest">
+      </codeGenerationAdd>
    </extension>
 
 </plugin>

@@ -7,6 +7,7 @@ import pt.iscte.pidesco.codegenerator.wrappers.Regex;
 
 /**
  * This is the service to be used by other components. This service provides the necessary strings for the code generation
+ * This interface also serves as extension point to replace the implementation of this interface
  * @author D01
  *
  */

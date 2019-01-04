@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import pt.iscte.pidesco.codegenerator.extensability.CodeGeneratorFunctionAddExtension;
 import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
 import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
 import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.IfType;
@@ -294,7 +295,12 @@ public class CodeGeneratorView implements PidescoView{
 	}
 
 	private void createExtensions(Composite viewArea) {
-		IConfigurationElement[] elements = model.getExtensions();
+		createFunctionReplacementExtension(viewArea);
+		createFunctionAddExtension(viewArea);
+	}
+
+	private void createFunctionReplacementExtension(Composite viewArea) {
+		IConfigurationElement[] elements = model.getFunctionReplacementExtension();
 		if(elements.length > 0) {
 			extensionServicesMap = new HashMap<>();	//Create hashmap to handle the different services extensions
 			extensionServicesMap.put(ORIGINAL_TAG, currentCodeGeneratorService); //Saves the current service
@@ -320,6 +326,23 @@ public class CodeGeneratorView implements PidescoView{
 					e1.printStackTrace();
 				}
 			} 
+		}
+	}
+	
+	private void createFunctionAddExtension(Composite viewArea) {
+		IConfigurationElement[] elements = model.getFunctionAddExtension();
+		if(elements.length > 0) {
+			Label extLabel = new Label(viewArea, SWT.None);
+			extLabel.setText("Extension Functionalities: ");
+		}
+		for(IConfigurationElement element : elements) {
+			try {
+				CodeGeneratorFunctionAddExtension codeGeneratorFunctionAddExtension = (CodeGeneratorFunctionAddExtension) 
+						element.createExecutableExtension("class");
+				codeGeneratorFunctionAddExtension.createCodeGenerationContent(viewArea);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

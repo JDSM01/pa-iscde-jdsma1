@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="codeGeneration" name="CodeGeneration" schema="schema/codeGeneration.exsd"/>
+   <extension-point id="codeGenerationReplacement" name="CodeGenerationReplacement" schema="schema/codeGenerationReplacement.exsd"/>
+   <extension-point id="codeGenerationAdd" name="codeGenerationAdd" schema="schema/codeGenerationAdd.exsd"/>
    <extension
          id="CodeGeneratorView"
          name="CodeGeneratorView"

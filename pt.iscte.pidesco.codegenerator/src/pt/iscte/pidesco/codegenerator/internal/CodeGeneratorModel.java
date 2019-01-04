@@ -263,11 +263,17 @@ public class CodeGeneratorModel {
 		javaService.parseFile(file, new EditorVisitor(this, methodSearchExpression, variableSearchExpression, line));
 	}
 
-	//Gets the extensions of the project
-	public IConfigurationElement[] getExtensions() {
+	//Gets the function replacement extension of the project
+	public IConfigurationElement[] getFunctionReplacementExtension() {
 		IExtensionRegistry reg = Platform.getExtensionRegistry();
-		return reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGeneration");
+		return reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGenerationReplacement");
 	}
+	
+	//Gets the function add extension of the project
+		public IConfigurationElement[] getFunctionAddExtension() {
+			IExtensionRegistry reg = Platform.getExtensionRegistry();
+			return reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGenerationAdd");
+		}
 
 	//Returns the correct error value depending on the value of the generatedString and position or null if there's no error
 	public String getError(String generatedString, int position) {
