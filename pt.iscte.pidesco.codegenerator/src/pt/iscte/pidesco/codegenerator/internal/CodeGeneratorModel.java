@@ -185,7 +185,7 @@ public class CodeGeneratorModel {
 	}
 
 	//Sets the ending offset of a constructor
-	public void setConstructorEndOffset(int endLine) {
+	public void setMethodEndLine(int endLine) {
 		this.methodEndLine = endLine;
 	}
 

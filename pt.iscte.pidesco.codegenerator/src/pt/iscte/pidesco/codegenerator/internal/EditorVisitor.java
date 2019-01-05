@@ -81,7 +81,7 @@ public class EditorVisitor extends ASTVisitor{
 	public boolean visit(MethodDeclaration node) {
 		if(methodSearchExpression != null && node.getName().toString().equals(methodSearchExpression)) {
 			int endLine = endLine(node);
-			codeGeneratorModel.setConstructorEndOffset(endLine);
+			codeGeneratorModel.setMethodEndLine(endLine);
 		}
 		return true;
 	}
