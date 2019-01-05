@@ -1,0 +1,27 @@
+package pt.iscte.pidesco.demo;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+
+import pt.iscte.pidesco.codegenerator.extensability.CodeGeneratorFunctionAddExtension;
+import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+
+
+public class AddExtensionTest2 implements CodeGeneratorFunctionAddExtension{
+
+	@Override
+	public void createCodeGenerationContent(Composite viewArea) {
+		JavaEditorServices javaServices = Activator.getInstance().getJavaService();
+		Button testButton = new Button(viewArea, SWT.PUSH);
+		testButton.setText("Add extension test2");
+		testButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				javaServices.insertTextAtCursor("public void thisIsJustAnAddExtensionTest2(){\n\n}");
+			}
+		});
+	}
+
+}

@@ -42,7 +42,15 @@
          name="CGSAdd"
          point="pt.iscte.pidesco.codegenerator.codeGenerationAdd">
       <codeGenerationAdd
-            class="pt.iscte.pidesco.demo.AddExtensionTest">
+            class="pt.iscte.pidesco.demo.AddExtensionTest"
+            name="AddExtension">
+      </codeGenerationAdd>
+   </extension>
+   <extension
+         point="pt.iscte.pidesco.codegenerator.codeGenerationAdd">
+      <codeGenerationAdd
+            class="pt.iscte.pidesco.demo.AddExtensionTest2"
+            name="test2">
       </codeGenerationAdd>
    </extension>
 
