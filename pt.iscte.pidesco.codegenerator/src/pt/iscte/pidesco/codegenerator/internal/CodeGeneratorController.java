@@ -103,7 +103,7 @@ public class CodeGeneratorController implements CodeStringGeneratorService{
 			String staticString = isStatic ? "static " : "";
 			String finalString = isFinal ? "final " : "";
 			String acessLevelString = acessLevel == AcessLevel.PACKAGE_PRIVATE ? "" : acessLevel.toString().toLowerCase() + " ";
-			fieldCreator += acessLevelString + staticString + finalString + field.getType() + " " + field.getName() + ";\n";
+			fieldCreator += "\t" + acessLevelString + staticString + finalString + field.getType() + " " + field.getName() + ";\n";
 		}
 		return fieldCreator;
 	}

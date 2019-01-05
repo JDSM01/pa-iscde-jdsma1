@@ -84,9 +84,9 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String bindedVariable = codeStringGeneratorService.generateBindedVariable(fields);
-		int offset = codeGeneratorModel.getConstructorEndOffset();
-		if(offset != 0) {
-			javaService.insertText(file, bindedVariable, offset, 0);
+		int endLine = codeGeneratorModel.getMethodEndLine();
+		if(endLine != 0) {
+			javaService.insertText(file, bindedVariable, endLine, 0);
 		}
 	}
 
@@ -159,8 +159,8 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String setter = codeStringGeneratorService.generateSetter(variableType, variableName);
-		int offset = getCorrectOffset(codeGeneratorModel.getConstructorEndOffset());
-		javaService.insertText(file, setter, offset, 0);
+		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+		javaService.insertLine(file, setter, endLine);
 	}
 
 	@Override
@@ -175,8 +175,8 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String setter = codeStringGeneratorService.generateSetter(variableType, variableName, methodName);
-		int offset = getCorrectOffset(codeGeneratorModel.getConstructorEndOffset());
-		javaService.insertText(file, setter, offset, 0);
+		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+		javaService.insertLine(file, setter, endLine);
 	}
 
 	@Override
@@ -191,8 +191,8 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String getter = codeStringGeneratorService.generateGetter(variableType, variableName);
-		int offset = getCorrectOffset(codeGeneratorModel.getConstructorEndOffset());
-		javaService.insertText(file, getter, offset, 0);
+		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+		javaService.insertLine(file, getter, endLine);
 	}
 
 	@Override
@@ -207,8 +207,8 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String getter = codeStringGeneratorService.generateGetter(variableType, variableName, methodName);
-		int offset = getCorrectOffset(codeGeneratorModel.getConstructorEndOffset());
-		javaService.insertText(file, getter, offset, 0);
+		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+		javaService.insertLine(file, getter, endLine);
 	}
 
 	@Override
@@ -232,8 +232,8 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments);
-		int offset = getCorrectOffset(codeGeneratorModel.getConstructorEndOffset());
-		javaService.insertText(file, method, offset, 0);
+		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+		javaService.insertLine(file, method, endLine);
 	}
 
 	@Override
@@ -242,8 +242,8 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments, returnValue);
-		int offset = getCorrectOffset(codeGeneratorModel.getConstructorEndOffset());
-		javaService.insertText(file, method, offset, 0);
+		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+		javaService.insertLine(file, method, endLine);
 	}
 
 	@Override
@@ -252,8 +252,8 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments, returnValue, body);
-		int offset = getCorrectOffset(codeGeneratorModel.getConstructorEndOffset());
-		javaService.insertText(file, method, offset, 0);
+		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+		javaService.insertLine(file, method, endLine);
 	}
 
 	@Override
@@ -280,10 +280,10 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		javaService.insertLine(file, method, line);
 	}
 
-	//Gets end of file offset if there's no constructor
-	private int getCorrectOffset(int constructorEndOffset) {
-		int offset = constructorEndOffset == 0 ? codeGeneratorModel.getEndOfFileOffset() - 1 : constructorEndOffset + 2;
-		return offset;
+	//Gets end of file offset if there's no method
+	private int getCorrectLine(int methodEndLine) {
+		int endLine = methodEndLine == 0 ? codeGeneratorModel.getEndOfFileLine() - 1 : methodEndLine + 2;
+		return endLine;
 	}
 
 	//Inserts a string after the last field or after the class initial line if there's no fields
