@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator.wrappers;
+package pa.iscde.codegenerator.wrappers;
 
 //An object containing the type and name of a field
 public class Field {

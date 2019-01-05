@@ -1,12 +1,12 @@
-package pt.iscte.pidesco.codegenerator.internal;
+package pa.iscde.codegenerator.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
-import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService;
+import pa.iscde.codegenerator.service.CodeGeneratorService;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
 public class CodeGeneratorActivator implements BundleActivator {

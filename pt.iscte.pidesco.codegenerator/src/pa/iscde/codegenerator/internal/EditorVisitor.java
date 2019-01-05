@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator.internal;
+package pa.iscde.codegenerator.internal;
 
 
 import org.eclipse.jdt.core.dom.ASTNode;

@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator.internal;
+package pa.iscde.codegenerator.internal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.ITextSelection;
 
-import pt.iscte.pidesco.codegenerator.wrappers.Field;
-import pt.iscte.pidesco.codegenerator.wrappers.SimpleMethod;
+import pa.iscde.codegenerator.wrappers.Field;
+import pa.iscde.codegenerator.wrappers.SimpleMethod;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 /**
  * This class is responsible to give the view the required objects and information.
@@ -270,13 +270,13 @@ public class CodeGeneratorModel {
 	//Gets the function replacement extension of the project
 	public IConfigurationElement[] getFunctionReplacementExtension() {
 		IExtensionRegistry reg = Platform.getExtensionRegistry();
-		return reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGenerationReplacement");
+		return reg.getConfigurationElementsFor("pa.iscde.codegenerator.codeGenerationReplacement");
 	}
 	
 	//Gets the function add extension of the project
 		public IConfigurationElement[] getFunctionAddExtension() {
 			IExtensionRegistry reg = Platform.getExtensionRegistry();
-			return reg.getConfigurationElementsFor("pt.iscte.pidesco.codegenerator.codeGenerationAdd");
+			return reg.getConfigurationElementsFor("pa.iscde.codegenerator.codeGenerationAdd");
 		}
 
 	//Returns the correct error value depending on the value of the generatedString and position or null if there's no error

@@ -6,50 +6,50 @@
          name="My view"
          point="pt.iscte.pidesco.view">
       <view
-            class="pt.iscte.pidesco.demo.TestView"
+            class="pa.iscde.demo.TestView"
             icon="prettysmile.png">
       </view>
    </extension>
    <extension
          id="codeGenerationReplacement"
          name="CGS"
-         point="pt.iscte.pidesco.codegenerator.codeGenerationReplacement">
+         point="pa.iscde.codegenerator.codeGenerationReplacement">
       <codeGenerationReplacement
-            class="pt.iscte.pidesco.demo.CGS"
+            class="pa.iscde.demo.CGS"
             name="CGS">
       </codeGenerationReplacement>
    </extension>
    <extension
          id="codeGenerationReplacement2"
          name="CGS"
-         point="pt.iscte.pidesco.codegenerator.codeGenerationReplacement">
+         point="pa.iscde.codegenerator.codeGenerationReplacement">
       <codeGenerationReplacement
-            class="pt.iscte.pidesco.demo.CGS2"
+            class="pa.iscde.demo.CGS2"
             name="CGS">
       </codeGenerationReplacement>
    </extension>
    <extension
          id="codeGenerationReplacement3"
          name="CGS"
-         point="pt.iscte.pidesco.codegenerator.codeGenerationReplacement">
+         point="pa.iscde.codegenerator.codeGenerationReplacement">
       <codeGenerationReplacement
-            class="pt.iscte.pidesco.demo.CGS"
+            class="pa.iscde.demo.CGS"
             name="CGS">
       </codeGenerationReplacement>
    </extension>
    <extension
          id="CGSAdd"
          name="CGSAdd"
-         point="pt.iscte.pidesco.codegenerator.codeGenerationAdd">
+         point="pa.iscde.codegenerator.codeGenerationAdd">
       <codeGenerationAdd
-            class="pt.iscte.pidesco.demo.AddExtensionTest"
+            class="pa.iscde.demo.AddExtensionTest"
             name="AddExtension">
       </codeGenerationAdd>
    </extension>
    <extension
-         point="pt.iscte.pidesco.codegenerator.codeGenerationAdd">
+         point="pa.iscde.codegenerator.codeGenerationAdd">
       <codeGenerationAdd
-            class="pt.iscte.pidesco.demo.AddExtensionTest2"
+            class="pa.iscde.demo.AddExtensionTest2"
             name="test2">
       </codeGenerationAdd>
    </extension>

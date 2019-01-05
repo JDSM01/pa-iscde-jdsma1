@@ -1,14 +1,14 @@
-package pt.iscte.pidesco.codegenerator.internal;
+package pa.iscde.codegenerator.internal;
 
 import java.io.File;
 import java.util.List;
 
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.IfType;
-import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
-import pt.iscte.pidesco.codegenerator.wrappers.Field;
-import pt.iscte.pidesco.codegenerator.wrappers.Regex;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.IfType;
+import pa.iscde.codegenerator.service.CodeGeneratorService;
+import pa.iscde.codegenerator.wrappers.Field;
+import pa.iscde.codegenerator.wrappers.Regex;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
 public class CodeGeneratorServiceImpl implements CodeGeneratorService{

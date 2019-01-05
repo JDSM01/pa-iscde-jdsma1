@@ -8,7 +8,7 @@
          name="CodeGeneratorView"
          point="pt.iscte.pidesco.view">
       <view
-            class="pt.iscte.pidesco.codegenerator.internal.CodeGeneratorView"
+            class="pa.iscde.codegenerator.internal.CodeGeneratorView"
             icon="smiley.png">
       </view>
    </extension>

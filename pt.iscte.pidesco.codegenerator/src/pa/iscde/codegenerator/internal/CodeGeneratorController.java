@@ -1,10 +1,10 @@
-package pt.iscte.pidesco.codegenerator.internal;
+package pa.iscde.codegenerator.internal;
 
 import java.util.List;
 
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
-import pt.iscte.pidesco.codegenerator.wrappers.Field;
-import pt.iscte.pidesco.codegenerator.wrappers.Regex;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService;
+import pa.iscde.codegenerator.wrappers.Field;
+import pa.iscde.codegenerator.wrappers.Regex;
 
 /**
  * This class is the implementation of this component given service. This class is responsible to transform the input that the 

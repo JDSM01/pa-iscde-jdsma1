@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator.internal;
+package pa.iscde.codegenerator.internal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,12 +22,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import pt.iscte.pidesco.codegenerator.extensability.CodeGeneratorFunctionAddExtension;
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.IfType;
-import pt.iscte.pidesco.codegenerator.wrappers.Field;
-import pt.iscte.pidesco.codegenerator.wrappers.SimpleMethod;
+import pa.iscde.codegenerator.extensability.CodeGeneratorFunctionAddExtension;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.IfType;
+import pa.iscde.codegenerator.wrappers.Field;
+import pa.iscde.codegenerator.wrappers.SimpleMethod;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
