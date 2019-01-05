@@ -204,22 +204,15 @@ public interface CodeStringGeneratorService {
 		PUBLIC, PROTECTED, PACKAGE_PRIVATE, PRIVATE
 	}
 
-	
 	/**
-	 * Generates a string to comment a field
-	 * @return A string to be used before the field statement
+	 * Generates a string to be used to comment in the beginning of the code block
+	 * @return A string to be used at the beginning of the code block
 	 */
-	String generateCommentFieldString();
+	String generateCommentBeginString();
 
 	/**
-	 * Generates a string to be used to comment in the beginning of a method
-	 * @return A string to be used at the beginning of a method
+	 * Generates a string to be used to comment in the end of the code block
+	 * @return A string to be used at the end of the code block
 	 */
-	String generateCommentMethodBeginString();
-
-	/**
-	 * Generates a string to be used to comment in the end of a method
-	 * @return A string to be used at the end of a method
-	 */
-	String generateCommentMethodEndString();
+	String generateCommentEndString();
 }

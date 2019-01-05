@@ -28,8 +28,12 @@ import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.AcessLeve
 import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.IfType;
 import pa.iscde.codegenerator.wrappers.Field;
 import pa.iscde.codegenerator.wrappers.SimpleMethod;
+import pa.iscde.search.model.MatchResult;
+import pa.iscde.search.services.SearchService;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+import pt.iscte.pidesco.projectbrowser.model.PackageElement;
+import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
 
 /**
@@ -63,12 +67,16 @@ public class CodeGeneratorView implements PidescoView{
 	private Composite mainViewArea;
 	private Composite extensionAddArea;
 	private SashForm mainSashForm;
+	private ProjectBrowserServices browserService;
+	private SearchService searchService;
+	private Button generateSearchButton;
 
 	@Override
 	public void createContents(Composite parent, Map<String, Image> imageMap) {
 		javaService = CodeGeneratorActivator.getInstance().getJavaEditorServices();
 		currentCodeGeneratorService = CodeGeneratorActivator.getInstance().getCodeGeneratorService();
-
+		searchService = CodeGeneratorActivator.getInstance().getSearchService();
+		browserService = CodeGeneratorActivator.getInstance().getBrowserService();
 		model = new CodeGeneratorModel(javaService);
 		createLayout(parent);
 		createButtons();
@@ -299,6 +307,42 @@ public class CodeGeneratorView implements PidescoView{
 			}
 		};
 	}
+	
+	private SelectionListener setSearchListener() {
+		return new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
+				File file = codeGeneratorResponse.getFile();
+				if(file != null) {
+					String selection = codeGeneratorResponse.getSelection();
+					PackageElement root = browserService.getRootPackage();
+					List<MatchResult> fieldResults = searchService.searchField(selection, root);
+					List<MatchResult> methodResults = searchService.searchMethod(selection, root);
+					int linesAdded = 0;
+					for(MatchResult matchResult : fieldResults) {
+						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
+								matchResult.getLineNumber() - 1);
+						linesAdded++;
+						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
+						matchResult.getLineNumber() + linesAdded);
+						linesAdded++;
+					}
+					for(MatchResult matchResult : methodResults) {
+						model.parse(matchResult.getFile(), matchResult.getNodeName(), null);
+						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
+								matchResult.getLineNumber() + linesAdded - 1);
+						linesAdded++;
+						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
+							model.getMethodEndLine() + 1);
+						linesAdded++;
+					}
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
+				}
+			}
+		};
+	}
 
 	//Handles the creation of all extensions
 	private void createExtensions() {
@@ -432,6 +476,8 @@ public class CodeGeneratorView implements PidescoView{
 		generateConstructorWithBindingButton.setText("Create constructor and bind");
 		generateFieldButton = new Button(mainViewArea, SWT.PUSH);
 		generateFieldButton.setText("Create Field");
+		generateSearchButton = new Button(mainViewArea, SWT.PUSH);
+		generateSearchButton.setText("Comment all selection occurences");
 	}
 
 	private void createRadioButton(Composite composite, String name, boolean select) {
@@ -459,6 +505,7 @@ public class CodeGeneratorView implements PidescoView{
 		generateMethodButton.addSelectionListener(setMethodListener());
 		generateConstructorWithBindingButton.addSelectionListener(setConstructorWithBindingListnener());
 		generateFieldButton.addSelectionListener(setFieldListener());
+		generateSearchButton.addSelectionListener(setSearchListener());
 	}
 
 	//Creates the label that will be responsible for showing any possible errors in the generation of code

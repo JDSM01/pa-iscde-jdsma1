@@ -113,19 +113,13 @@ public class CGS2 implements CodeStringGeneratorService{
 	}
 
 	@Override
-	public String generateCommentFieldString() {
+	public String generateCommentBeginString() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String generateCommentMethodBeginString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String generateCommentMethodEndString() {
+	public String generateCommentEndString() {
 		// TODO Auto-generated method stub
 		return null;
 	}

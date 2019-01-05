@@ -1,13 +1,13 @@
-package pt.iscte.pidesco.codegenerator.taskExtension;
+package pa.iscde.codegenerator.taskExtension;
 
 import java.io.File;
 
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService;
+import pa.iscde.codegenerator.internal.CodeGeneratorActivator;
+import pa.iscde.codegenerator.internal.CodeGeneratorModel;
+import pa.iscde.codegenerator.service.CodeGeneratorService;
 import pa.iscde.javaTasks.ext.Task;
 import pa.iscde.javaTasks.ext.TasksAction;
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
-import pt.iscte.pidesco.codegenerator.internal.CodeGeneratorActivator;
-import pt.iscte.pidesco.codegenerator.internal.CodeGeneratorModel;
-import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
 public class TaskExtension implements TasksAction{
