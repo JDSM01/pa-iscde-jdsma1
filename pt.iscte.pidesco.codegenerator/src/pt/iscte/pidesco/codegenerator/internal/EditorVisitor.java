@@ -66,13 +66,13 @@ public class EditorVisitor extends ASTVisitor{
 	
 	private int endLine(ASTNode node) {
 		return((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition() + node.getLength());
-	}
-
+	}	
+	
 	//visits class and sets in the module the line where the class statement is and the offset of the end of the file
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		codeGeneratorModel.setClassInitLine(sourceLine(node));
-		codeGeneratorModel.setEndOfFileOffset(node.getStartPosition() + node.getLength());
+		codeGeneratorModel.setEndOfFileLine(endLine(node));
 		return true;
 	}
 

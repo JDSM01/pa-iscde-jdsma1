@@ -20,7 +20,7 @@ import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
  */
 public class CodeGeneratorModel {
 	private final JavaEditorServices javaService;
-	private int constructorEndLine;
+	private int methodEndLine;
 	private int fieldEndLine;
 	private String methodType;
 	private int endOfFile;
@@ -177,26 +177,26 @@ public class CodeGeneratorModel {
 		return new SimpleMethod("", Collections.emptyList());
 	}
 
-	//Returns the ending offset of a constructor and erases the saved offset
+	//Returns the ending line of a method and erases the saved line
 	public int getMethodEndLine() {
-		int offset = constructorEndLine;
-		constructorEndLine = 0;
-		return offset;
+		int endLine = methodEndLine;
+		methodEndLine = 0;
+		return endLine;
 	}
 
-	//Sets the ending offset of a constructor
-	public void setMethodEndLine(int constructorEndLine) {
-		this.constructorEndLine = constructorEndLine;
+	//Sets the ending line of a method
+	public void setMethodEndLine(int endLine) {
+		this.methodEndLine = endLine;
 	}
 
-	//Returns the line of the last field and erases the saved offset
+	//Returns the line of the last field and erases the saved line
 	public int getFieldEndLine() {
 		int line = fieldEndLine;
 		fieldEndLine = 0;
 		return line;
 	}
 
-	//Sets the offset of the last field
+	//Sets the line of the last field
 	public void setFieldEndLine(int fieldEndLine) {
 		this.fieldEndLine = fieldEndLine;
 	}
@@ -225,15 +225,15 @@ public class CodeGeneratorModel {
 		this.methodType = expressionType;
 	}
 
-	//Returns the offset of the last line of a certain file
-	public int getEndOfFileOffset() {
-		int endOffset = endOfFile;
+	//Returns the line of the last line of a certain file
+	public int getEndOfFileLine() {
+		int endLine = endOfFile;
 		endOfFile = 0;
-		return endOffset;
+		return endLine;
 	}
 
-	//Sets the offset of the last line of a certain file
-	public void setEndOfFileOffset(int endOfFile) {
+	//Sets the line of the last line of a certain file
+	public void setEndOfFileLine(int endOfFile) {
 		this.endOfFile = endOfFile;
 	}
 

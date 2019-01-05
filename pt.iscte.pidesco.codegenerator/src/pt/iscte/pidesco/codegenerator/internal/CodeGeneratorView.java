@@ -95,7 +95,7 @@ public class CodeGeneratorView implements PidescoView{
 					String fileName = model.getFileNameWithoutExtension(file.getName());
 					model.parse(file, fileName, null);
 					String setter = currentCodeGeneratorService.generateGetter(field.getType(), field.getName());
-					int endLine = getCorrectOffset(model.getMethodEndLine());
+					int endLine = getCorrectLine(model.getMethodEndLine());
 					insertLine(file, setter, endLine);
 				}
 				else {
@@ -115,7 +115,7 @@ public class CodeGeneratorView implements PidescoView{
 					String fileName = model.getFileNameWithoutExtension(file.getName());
 					model.parse(file, fileName, null);
 					String setter = currentCodeGeneratorService.generateSetter(field.getType(), field.getName());
-					int endLine = getCorrectOffset(model.getMethodEndLine());
+					int endLine = getCorrectLine(model.getMethodEndLine());
 					insertLine(file, setter, endLine);
 				}
 				else {
@@ -136,7 +136,7 @@ public class CodeGeneratorView implements PidescoView{
 					model.parse(file, fileName, null);
 					String setter = currentCodeGeneratorService.generateSetter(field.getType(), field.getName());
 					String getter = currentCodeGeneratorService.generateGetter(field.getType(), field.getName());
-					int endLine = getCorrectOffset(model.getMethodEndLine());
+					int endLine = getCorrectLine(model.getMethodEndLine());
 					insertLine(file, setter, endLine);
 					insertLine(file, getter, endLine);
 				}
@@ -296,10 +296,10 @@ public class CodeGeneratorView implements PidescoView{
 					String fileName = model.getFileNameWithoutExtension(file.getName());
 					model.parse(file, fileName, selection.replaceAll(";", "").replaceAll(" ", ""));
 					String methodType = model.getMethodType();
-					int lastConstructorEndLine = getCorrectOffset(model.getMethodEndLine());
-					String setter = currentCodeGeneratorService.generateMethod(AcessLevel.PRIVATE, false, methodType, 
+					int lastConstructorEndLine = getCorrectLine(model.getMethodEndLine());
+					String methodString = currentCodeGeneratorService.generateMethod(AcessLevel.PRIVATE, false, methodType, 
 							method.getName(), method.getArguments());
-					insertLine(file, setter, lastConstructorEndLine);
+					insertLine(file, methodString, lastConstructorEndLine);
 				}
 				else {
 					setErrorMessage(NO_FILE_OPENED_ERROR);
@@ -517,10 +517,10 @@ public class CodeGeneratorView implements PidescoView{
 		label.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
 	}
 
-	//Gets end of file offset if there's no constructor
-	private int getCorrectOffset(int constructorEndLine) {
-		int offset = constructorEndLine == 0 ? model.getEndOfFileOffset() - 1 : constructorEndLine;
-		return offset;
+	//Gets end of file offset if there's no method
+	private int getCorrectLine(int methodEndLine) {
+		int endLine = methodEndLine == 0 ? model.getEndOfFileLine() - 1 : methodEndLine;
+		return endLine;
 	}
 
 	private void insertIf(IfType type) {
