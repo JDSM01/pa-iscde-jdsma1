@@ -1,9 +1,9 @@
-package pt.iscte.pidesco.codegenerator.extensability;
+package pa.iscde.codegenerator.extensability;
 
 import java.util.List;
 
-import pt.iscte.pidesco.codegenerator.wrappers.Field;
-import pt.iscte.pidesco.codegenerator.wrappers.Regex;
+import pa.iscde.codegenerator.wrappers.Field;
+import pa.iscde.codegenerator.wrappers.Regex;
 
 /**
  * This is the service to be used by other components. This service provides the necessary strings for the code generation

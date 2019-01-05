@@ -1,11 +1,11 @@
-package pt.iscte.pidesco.codegenerator.service;
+package pa.iscde.codegenerator.service;
 
 import java.util.List;
 
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService.IfType;
-import pt.iscte.pidesco.codegenerator.wrappers.Field;
-import pt.iscte.pidesco.codegenerator.wrappers.Regex;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.IfType;
+import pa.iscde.codegenerator.wrappers.Field;
+import pa.iscde.codegenerator.wrappers.Regex;
 
 /**
  * This service is responsible for generating and inserting them 

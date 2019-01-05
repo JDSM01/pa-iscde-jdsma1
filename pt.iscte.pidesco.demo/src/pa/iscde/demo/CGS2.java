@@ -1,16 +1,16 @@
-package pt.iscte.pidesco.demo;
+package pa.iscde.demo;
 
 import java.util.List;
 
-import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
-import pt.iscte.pidesco.codegenerator.wrappers.Field;
-import pt.iscte.pidesco.codegenerator.wrappers.Regex;
+import pa.iscde.codegenerator.extensability.CodeStringGeneratorService;
+import pa.iscde.codegenerator.wrappers.Field;
+import pa.iscde.codegenerator.wrappers.Regex;
 
-public class CGS implements CodeStringGeneratorService{
+public class CGS2 implements CodeStringGeneratorService{
 
 	@Override
 	public String generateVariableName(String convertFrom, String languageType, boolean isStatic) {
-		return "IT WORKED";
+		return "IT WORKED2";
 	}
 
 	@Override

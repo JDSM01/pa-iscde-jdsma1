@@ -1,4 +1,4 @@
-package pt.iscte.pidesco.codegenerator.extensability;
+package pa.iscde.codegenerator.extensability;
 
 import org.eclipse.swt.widgets.Composite;
 
