@@ -177,26 +177,26 @@ public class CodeGeneratorModel {
 		return new SimpleMethod("", Collections.emptyList());
 	}
 
-	//Returns the ending offset of a constructor and erases the saved offset
+	//Returns the ending line of a method and erases the saved line
 	public int getMethodEndLine() {
 		int endLine = methodEndLine;
 		methodEndLine = 0;
 		return endLine;
 	}
 
-	//Sets the ending offset of a constructor
+	//Sets the ending line of a method
 	public void setMethodEndLine(int endLine) {
 		this.methodEndLine = endLine;
 	}
 
-	//Returns the line of the last field and erases the saved offset
+	//Returns the line of the last field and erases the saved line
 	public int getFieldEndLine() {
 		int line = fieldEndLine;
 		fieldEndLine = 0;
 		return line;
 	}
 
-	//Sets the offset of the last field
+	//Sets the line of the last field
 	public void setFieldEndLine(int fieldEndLine) {
 		this.fieldEndLine = fieldEndLine;
 	}
@@ -225,14 +225,14 @@ public class CodeGeneratorModel {
 		this.methodType = expressionType;
 	}
 
-	//Returns the offset of the last line of a certain file
+	//Returns the line of the last line of a certain file
 	public int getEndOfFileLine() {
 		int endLine = endOfFile;
 		endOfFile = 0;
 		return endLine;
 	}
 
-	//Sets the offset of the last line of a certain file
+	//Sets the line of the last line of a certain file
 	public void setEndOfFileLine(int endOfFile) {
 		this.endOfFile = endOfFile;
 	}
