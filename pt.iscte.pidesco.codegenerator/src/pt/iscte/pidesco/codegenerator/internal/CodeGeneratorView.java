@@ -11,14 +11,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -466,7 +464,7 @@ public class CodeGeneratorView implements PidescoView{
 	//Creates the label that will be responsible for showing any possible errors in the generation of code
 	private void createErrorLabel() {
 		Composite composite = new Composite(mainViewArea, SWT.NONE);
-		composite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		composite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		label = new Label(composite, SWT.NONE);
 		label.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
 	}
@@ -524,7 +522,7 @@ public class CodeGeneratorView implements PidescoView{
 	private void setErrorMessage(String message) {
 		if(!label.getText().equals(message)) {
 			label.setText(message);
-			label.requestLayout();
+			label.redraw();
 		}
 	}
 
