@@ -20,7 +20,7 @@ import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
  */
 public class CodeGeneratorModel {
 	private final JavaEditorServices javaService;
-	private int constructorEndOffset;
+	private int constructorEndLine;
 	private int fieldEndLine;
 	private String methodType;
 	private int endOfFile;
@@ -178,15 +178,15 @@ public class CodeGeneratorModel {
 	}
 
 	//Returns the ending offset of a constructor and erases the saved offset
-	public int getConstructorEndOffset() {
-		int offset = constructorEndOffset;
-		constructorEndOffset = 0;
+	public int getMethodEndLine() {
+		int offset = constructorEndLine;
+		constructorEndLine = 0;
 		return offset;
 	}
 
 	//Sets the ending offset of a constructor
-	public void setConstructorEndOffset(int constructorEndOffset) {
-		this.constructorEndOffset = constructorEndOffset;
+	public void setMethodEndLine(int constructorEndLine) {
+		this.constructorEndLine = constructorEndLine;
 	}
 
 	//Returns the line of the last field and erases the saved offset

@@ -4,10 +4,11 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-
+import pa.iscde.search.services.SearchService;
 import pt.iscte.pidesco.codegenerator.extensability.CodeStringGeneratorService;
 import pt.iscte.pidesco.codegenerator.service.CodeGeneratorService;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
 public class CodeGeneratorActivator implements BundleActivator {
 
@@ -15,6 +16,8 @@ public class CodeGeneratorActivator implements BundleActivator {
 	private JavaEditorServices javaService;
 	private ServiceRegistration<CodeStringGeneratorService> stringGeneratorServiceRef;
 	private ServiceRegistration<CodeGeneratorService> codeGeneratorServiceRef;
+	private SearchService searchService;
+	private ProjectBrowserServices browserService;
 	private static CodeGeneratorActivator instance;
 
 
@@ -26,8 +29,12 @@ public class CodeGeneratorActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		instance = this;
-		ServiceReference<JavaEditorServices> serviceReference = bundleContext.getServiceReference(JavaEditorServices.class);
-		javaService = bundleContext.getService(serviceReference);
+		ServiceReference<JavaEditorServices> javaServiceReference = bundleContext.getServiceReference(JavaEditorServices.class);
+		ServiceReference<SearchService> searchServiceReference = bundleContext.getServiceReference(SearchService.class);
+		ServiceReference<ProjectBrowserServices> browserServiceReference = bundleContext.getServiceReference(ProjectBrowserServices.class);
+		javaService = bundleContext.getService(javaServiceReference);
+		searchService = bundleContext.getService(searchServiceReference);
+		browserService = bundleContext.getService(browserServiceReference);
 		codeGeneratorService = new CodeGeneratorController();
 		stringGeneratorServiceRef = bundleContext.registerService(CodeStringGeneratorService.class, codeGeneratorService, null);
 		codeGeneratorServiceRef = bundleContext.registerService(CodeGeneratorService.class, 
@@ -42,6 +49,14 @@ public class CodeGeneratorActivator implements BundleActivator {
 		return javaService;
 	}
 
+	public SearchService getSearchService() {
+		return searchService;
+	}
+	
+	public ProjectBrowserServices getBrowserService() {
+		return browserService;
+	}
+	
 	public static CodeGeneratorActivator getInstance() {
 		return instance;
 	}

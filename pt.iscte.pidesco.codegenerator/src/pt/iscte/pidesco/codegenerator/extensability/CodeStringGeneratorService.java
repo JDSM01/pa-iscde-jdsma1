@@ -203,4 +203,23 @@ public interface CodeStringGeneratorService {
 	public enum AcessLevel{
 		PUBLIC, PROTECTED, PACKAGE_PRIVATE, PRIVATE
 	}
+
+	
+	/**
+	 * Generates a string to comment a field
+	 * @return A string to be used before the field statement
+	 */
+	String generateCommentFieldString();
+
+	/**
+	 * Generates a string to be used to comment in the beginning of a method
+	 * @return A string to be used at the beginning of a method
+	 */
+	String generateCommentMethodBeginString();
+
+	/**
+	 * Generates a string to be used to comment in the end of a method
+	 * @return A string to be used at the end of a method
+	 */
+	String generateCommentMethodEndString();
 }

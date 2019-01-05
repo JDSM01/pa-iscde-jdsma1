@@ -112,4 +112,22 @@ public class CGS2 implements CodeStringGeneratorService{
 		return null;
 	}
 
+	@Override
+	public String generateCommentFieldString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String generateCommentMethodBeginString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String generateCommentMethodEndString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

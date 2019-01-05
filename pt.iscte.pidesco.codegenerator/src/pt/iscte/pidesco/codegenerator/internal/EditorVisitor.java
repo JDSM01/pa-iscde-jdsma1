@@ -63,6 +63,10 @@ public class EditorVisitor extends ASTVisitor{
 	private int sourceLine(ASTNode node) {
 		return ((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition());
 	}
+	
+	private int endLine(ASTNode node) {
+		return((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition() + node.getLength());
+	}
 
 	//visits class and sets in the module the line where the class statement is and the offset of the end of the file
 	@Override
@@ -72,12 +76,12 @@ public class EditorVisitor extends ASTVisitor{
 		return true;
 	}
 
-	//visits methods and adds the constructor end offset to the model if method name matches the methodSearchExpression
+	//visits methods and adds the method end offset to the model if method name matches the methodSearchExpression
 	@Override
 	public boolean visit(MethodDeclaration node) {
-		if(node.getName().toString().equals(methodSearchExpression)) {
-			int endOffset = node.getStartPosition() + node.getLength();
-			codeGeneratorModel.setConstructorEndOffset(endOffset);
+		if(methodSearchExpression != null && node.getName().toString().equals(methodSearchExpression)) {
+			int endLine = endLine(node);
+			codeGeneratorModel.setMethodEndLine(endLine);
 		}
 		return true;
 	}
