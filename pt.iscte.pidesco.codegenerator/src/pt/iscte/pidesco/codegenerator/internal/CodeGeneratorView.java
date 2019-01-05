@@ -10,10 +10,15 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -57,18 +62,20 @@ public class CodeGeneratorView implements PidescoView{
 	private Label label;
 	private Button generateGetterSetterButton;
 	private Button generateFieldButton;
+	private Composite mainViewArea;
+	private Composite extensionAddArea;
 
 	@Override
-	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
-		viewArea.setLayout(new RowLayout(SWT.VERTICAL));
+	public void createContents(Composite parent, Map<String, Image> imageMap) {
 		javaService = CodeGeneratorActivator.getInstance().getJavaEditorServices();
 		currentCodeGeneratorService = CodeGeneratorActivator.getInstance().getCodeGeneratorService();
 
 		model = new CodeGeneratorModel(javaService);
-		createButtons(viewArea);
+		createLayout(parent);
+		createButtons();
 		setListeners();
-		createExtensions(viewArea);
-		createErrorLabel(viewArea);
+		createExtensions();
+		createErrorLabel();
 	}
 
 	private SelectionAdapter setGetterListener() {
@@ -294,19 +301,19 @@ public class CodeGeneratorView implements PidescoView{
 		};
 	}
 
-	private void createExtensions(Composite viewArea) {
-		createFunctionReplacementExtension(viewArea);
-		createFunctionAddExtension(viewArea);
+	private void createExtensions() {
+		createFunctionReplacementExtension();
+		createFunctionAddExtension();
 	}
 
-	private void createFunctionReplacementExtension(Composite viewArea) {
+	private void createFunctionReplacementExtension() {
 		IConfigurationElement[] elements = model.getFunctionReplacementExtension();
 		if(elements.length > 0) {
 			extensionServicesMap = new HashMap<>();	//Create hashmap to handle the different services extensions
 			extensionServicesMap.put(ORIGINAL_TAG, currentCodeGeneratorService); //Saves the current service
 
 			//Radio Button creation
-			Composite composite = new Composite(viewArea, SWT.NONE);
+			Composite composite = new Composite(mainViewArea, SWT.NONE);
 			composite.setLayout(new RowLayout(SWT.HORIZONTAL));
 			new Label(composite, SWT.NONE).setText("Extensions: ");
 			createRadioButton(composite, ORIGINAL_TAG, true);
@@ -329,17 +336,17 @@ public class CodeGeneratorView implements PidescoView{
 		}
 	}
 	
-	private void createFunctionAddExtension(Composite viewArea) {
+	private void createFunctionAddExtension() {
 		IConfigurationElement[] elements = model.getFunctionAddExtension();
 		if(elements.length > 0) {
-			Label extLabel = new Label(viewArea, SWT.None);
-			extLabel.setText("Extension Functionalities: ");
+			Label extLabel = new Label(extensionAddArea, SWT.NONE);
+			extLabel.setText("Extension Functionalities:");
 		}
 		for(IConfigurationElement element : elements) {
 			try {
 				CodeGeneratorFunctionAddExtension codeGeneratorFunctionAddExtension = (CodeGeneratorFunctionAddExtension) 
 						element.createExecutableExtension("class");
-				codeGeneratorFunctionAddExtension.createCodeGenerationContent(viewArea);
+				codeGeneratorFunctionAddExtension.createCodeGenerationContent(extensionAddArea);
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
@@ -360,34 +367,47 @@ public class CodeGeneratorView implements PidescoView{
 		}
 		return uniqueName;
 	}
+	
+	//Creates the initial layout
+	private void createLayout(Composite parent) {
+		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
+		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		mainViewArea = new Composite(sashForm, SWT.NONE);
+		mainViewArea.setLayout(new FillLayout(SWT.VERTICAL));
+		extensionAddArea = new Composite(sashForm, SWT.NONE);
+		extensionAddArea.setLayout(new FillLayout(SWT.VERTICAL));
+		sashForm.setWeights(new int [] {50, 50});
+	}
 
 	//Create and set the text of the buttons
-	private void createButtons(Composite viewArea) {
-		generateVariableNameButton = new Button(viewArea, SWT.PUSH);
+	private void createButtons() {
+		Label label = new Label(mainViewArea, SWT.NONE);
+		label.setText("Base functionalities:");
+		generateVariableNameButton = new Button(mainViewArea, SWT.PUSH);
 		generateVariableNameButton.setText("Generate Variable Name");
-		generateIfButton = new Button(viewArea, SWT.PUSH);
+		generateIfButton = new Button(mainViewArea, SWT.PUSH);
 		generateIfButton.setText("Generate If");
-		generateIfNotNullButton = new Button(viewArea, SWT.PUSH);
+		generateIfNotNullButton = new Button(mainViewArea, SWT.PUSH);
 		generateIfNotNullButton.setText("Generate If not null");
-		generateIfNullButton = new Button(viewArea, SWT.PUSH);
+		generateIfNullButton = new Button(mainViewArea, SWT.PUSH);
 		generateIfNullButton.setText("Generate If null");
-		bindFieldVariableButton = new Button(viewArea, SWT.PUSH);
+		bindFieldVariableButton = new Button(mainViewArea, SWT.PUSH);
 		bindFieldVariableButton.setText("Bind Variable with Field");
-		bindFieldButton = new Button(viewArea, SWT.PUSH);
+		bindFieldButton = new Button(mainViewArea, SWT.PUSH);
 		bindFieldButton.setText("Bind Variable");
-		generateConstructorButton = new Button(viewArea, SWT.PUSH);
+		generateConstructorButton = new Button(mainViewArea, SWT.PUSH);
 		generateConstructorButton.setText("Create constructor");
-		generateSetterButton = new Button(viewArea, SWT.PUSH);
+		generateSetterButton = new Button(mainViewArea, SWT.PUSH);
 		generateSetterButton.setText("Create Setter");
-		generateGetterButton = new Button(viewArea, SWT.PUSH);
+		generateGetterButton = new Button(mainViewArea, SWT.PUSH);
 		generateGetterButton.setText("Create Getter");
-		generateGetterSetterButton = new Button(viewArea, SWT.PUSH);
+		generateGetterSetterButton = new Button(mainViewArea, SWT.PUSH);
 		generateGetterSetterButton.setText("Create Getter and Setter");
-		generateMethodButton = new Button(viewArea, SWT.PUSH);
+		generateMethodButton = new Button(mainViewArea, SWT.PUSH);
 		generateMethodButton.setText("Create Method");
-		generateConstructorWithBindingButton = new Button(viewArea, SWT.PUSH);
+		generateConstructorWithBindingButton = new Button(mainViewArea, SWT.PUSH);
 		generateConstructorWithBindingButton.setText("Create constructor and bind");
-		generateFieldButton = new Button(viewArea, SWT.PUSH);
+		generateFieldButton = new Button(mainViewArea, SWT.PUSH);
 		generateFieldButton.setText("Create Field");
 	}
 
@@ -419,8 +439,8 @@ public class CodeGeneratorView implements PidescoView{
 	}
 
 	//Creates the label that will be responsible for showing any possible errors in the generation of code
-	private void createErrorLabel(Composite viewArea) {
-		Composite composite = new Composite(viewArea, SWT.NONE);
+	private void createErrorLabel() {
+		Composite composite = new Composite(mainViewArea, SWT.NONE);
 		composite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		label = new Label(composite, SWT.NONE);
 		label.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
