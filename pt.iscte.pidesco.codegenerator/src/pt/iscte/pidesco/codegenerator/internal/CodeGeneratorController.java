@@ -88,7 +88,7 @@ public class CodeGeneratorController implements CodeStringGeneratorService{
 		String text = "";
 		for(int i = 0; i < fields.size(); i++) {
 			Field field = fields.get(i);
-			text += "\t" + "this." + field.getName() + " = " + field.getName() + ";";
+			text += "\t\t" + "this." + field.getName() + " = " + field.getName() + ";";
 			if(i < fields.size() - 1) { //if last field
 				text += "\n";
 			}
@@ -229,7 +229,7 @@ public class CodeGeneratorController implements CodeStringGeneratorService{
 
 	private String generateIfString(String selectedText, String body, IfType ifType) {
 		String ifCondition = "";
-		String endIf = " { \n\t" + body + "\n} \n";
+		String endIf = " { \n\t" + body + "\n\t} \n";
 		String variable = "variable";
 		if(selectedText != null && !selectedText.equals("")) {
 			variable = selectedText;
