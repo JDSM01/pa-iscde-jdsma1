@@ -48,7 +48,16 @@ public class CodeGeneratorView implements PidescoView{
 	private final static int INITIAL_UNIQUE_NAME = 1;
 	private JavaEditorServices javaService;
 	private CodeStringGeneratorService currentCodeGeneratorService;
+	private ProjectBrowserServices browserService;
+	private SearchService searchService;
+	private Map<String, CodeStringGeneratorService> extensionServicesMap;
 	private CodeGeneratorModel model;
+	//View
+	private Label errorLabel;
+	private Composite mainViewArea;
+	private Composite extensionAddArea;
+	private SashForm mainSashForm;
+	//Buttons
 	private Button generateSetterButton;
 	private Button generateGetterButton;
 	private Button generateMethodButton;
@@ -60,15 +69,8 @@ public class CodeGeneratorView implements PidescoView{
 	private Button generateIfNotNullButton;
 	private Button generateIfButton;
 	private Button generateVariableNameButton;
-	private Map<String, CodeStringGeneratorService> extensionServicesMap;
-	private Label label;
 	private Button generateGetterSetterButton;
 	private Button generateFieldButton;
-	private Composite mainViewArea;
-	private Composite extensionAddArea;
-	private SashForm mainSashForm;
-	private ProjectBrowserServices browserService;
-	private SearchService searchService;
 	private Button generateSearchButton;
 
 	@Override
@@ -512,8 +514,8 @@ public class CodeGeneratorView implements PidescoView{
 	private void createErrorLabel() {
 		Composite composite = new Composite(mainViewArea, SWT.NONE);
 		composite.setLayout(new FillLayout(SWT.HORIZONTAL));
-		label = new Label(composite, SWT.NONE);
-		label.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
+		errorLabel = new Label(composite, SWT.NONE);
+		errorLabel.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
 	}
 
 	//Gets end of file offset if there's no method
@@ -567,9 +569,9 @@ public class CodeGeneratorView implements PidescoView{
 
 	//Sets an error message in the view
 	private void setErrorMessage(String message) {
-		if(!label.getText().equals(message)) {
-			label.setText(message);
-			label.redraw();
+		if(!errorLabel.getText().equals(message)) {
+			errorLabel.setText(message);
+			errorLabel.redraw();
 		}
 	}
 
