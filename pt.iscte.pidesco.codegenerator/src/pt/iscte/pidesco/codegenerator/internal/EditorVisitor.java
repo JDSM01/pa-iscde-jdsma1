@@ -64,7 +64,7 @@ public class EditorVisitor extends ASTVisitor{
 		return ((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition());
 	}
 
-	//visits class
+	//visits class and sets in the module the line where the class statement is and the offset of the end of the file
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		codeGeneratorModel.setClassInitLine(sourceLine(node));
@@ -72,7 +72,7 @@ public class EditorVisitor extends ASTVisitor{
 		return true;
 	}
 
-	//visits methods
+	//visits methods and adds the constructor end offset to the model if method name matches the methodSearchExpression
 	@Override
 	public boolean visit(MethodDeclaration node) {
 		if(node.getName().toString().equals(methodSearchExpression)) {
@@ -81,14 +81,18 @@ public class EditorVisitor extends ASTVisitor{
 		}
 		return true;
 	}
-	// visits attributes
+	// visits fields and adds to the model the last field line
 	@Override
 	public boolean visit(FieldDeclaration node) {
 		codeGeneratorModel.setFieldEndLine(sourceLine(node));
 		return true; 
 	}
 
-	// visits variable declarations
+	/**
+	 *Visits variable declarations and if it matches the variableSearchExpression, sets the methodType in the model, otherwise sets
+	 *methodType to void
+	 *It also adds the variable offset in the model in case the sourceline matches the field line
+	 */
 	@Override
 	public boolean visit(VariableDeclarationFragment node) {
 		if(variableSearchExpression != null) {

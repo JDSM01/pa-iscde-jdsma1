@@ -53,8 +53,12 @@ public class CodeGeneratorActivator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		instance = null;
-		stringGeneratorServiceRef.unregister();
-		codeGeneratorServiceRef.unregister();
+		if(stringGeneratorServiceRef != null) {
+			stringGeneratorServiceRef.unregister();
+		}
+		if(codeGeneratorServiceRef != null) {
+			codeGeneratorServiceRef.unregister();	
+		}
 		codeGeneratorService = null;
 		javaService = null;
 	}

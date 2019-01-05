@@ -201,10 +201,14 @@ public class CodeGeneratorModel {
 		this.fieldEndLine = fieldEndLine;
 	}
 
+	//Returns the class statement line and erases the saved value
 	public int getClassInitLine() {
-		return startLine;
+		int line = startLine;
+		startLine = 0;
+		return line;
 	}
 
+	//Sets the line of the class statement
 	public void setClassInitLine(int startLine) {
 		this.startLine = startLine;
 	}
