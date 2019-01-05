@@ -325,17 +325,17 @@ public class CodeGeneratorView implements PidescoView{
 								matchResult.getStartIndex() + changedOffset,0);
 						changedOffset += commentString.length();
 					}
-					String a = currentCodeGeneratorService.generateCommentMethodBeginString();
-					String b = currentCodeGeneratorService.generateCommentMethodEndString();
+					String methodCommentBegin = currentCodeGeneratorService.generateCommentMethodBeginString();
+					String methodCommentEnd = currentCodeGeneratorService.generateCommentMethodEndString();
 					for(MatchResult matchResult : methodResults) {
 						model.parse(matchResult.getFile(), matchResult.getNodeName(), null);
 						int methodOffset = changedOffset;
-						javaService.insertText(matchResult.getFile(), a, 
+						javaService.insertText(matchResult.getFile(), methodCommentBegin, 
 								matchResult.getStartIndex() + methodOffset, 0);
-						methodOffset += a.length();
-						javaService.insertLine(matchResult.getFile(), b, 
+						methodOffset += methodCommentBegin.length();
+						javaService.insertLine(matchResult.getFile(), methodCommentEnd, 
 							model.getMethodEndLine());
-						methodOffset += b.length();
+						methodOffset += methodCommentEnd.length();
 					}
 				}
 				else {
