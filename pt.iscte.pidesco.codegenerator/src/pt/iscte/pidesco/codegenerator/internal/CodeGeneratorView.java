@@ -64,6 +64,7 @@ public class CodeGeneratorView implements PidescoView{
 	private Button generateFieldButton;
 	private Composite mainViewArea;
 	private Composite extensionAddArea;
+	private SashForm mainSashForm;
 
 	@Override
 	public void createContents(Composite parent, Map<String, Image> imageMap) {
@@ -336,30 +337,32 @@ public class CodeGeneratorView implements PidescoView{
 			} 
 		}
 	}
-	
+
 	private void createFunctionAddExtension() {
 		IConfigurationElement[] elements = model.getFunctionAddExtension();
 		if(elements.length > 0) {
+			extensionAddArea = new Composite(mainSashForm, SWT.NONE);
+			extensionAddArea.setLayout(new FillLayout(SWT.VERTICAL));
 			Label extLabel = new Label(extensionAddArea, SWT.NONE);
 			extLabel.setText("Extension Functionalities:");
-		}
-		//Creates new division for each add extension
-		SashForm sashForm = new SashForm(extensionAddArea, SWT.VERTICAL);
-		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		for(IConfigurationElement element : elements) {
-			try {
-				CodeGeneratorFunctionAddExtension codeGeneratorFunctionAddExtension = (CodeGeneratorFunctionAddExtension) 
-						element.createExecutableExtension("class");
-				//Creates the base layout
-				String extensionName = element.getAttribute("name");
-				Composite extensionComposite = new Composite(sashForm, SWT.NONE);
-				extensionComposite.setLayout(new FillLayout(SWT.VERTICAL));
-				Label label = new Label(extensionComposite, SWT.NONE);
-				label.setText(extensionName + ":");
-				//Adds the layout the extension made
-				codeGeneratorFunctionAddExtension.createCodeGenerationContent(extensionComposite);
-			} catch (CoreException e) {
-				e.printStackTrace();
+			//Creates new division for each add extension
+			SashForm sashForm = new SashForm(extensionAddArea, SWT.VERTICAL);
+			sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			for(IConfigurationElement element : elements) {
+				try {
+					CodeGeneratorFunctionAddExtension codeGeneratorFunctionAddExtension = (CodeGeneratorFunctionAddExtension) 
+							element.createExecutableExtension("class");
+					//Creates the base layout
+					String extensionName = element.getAttribute("name");
+					Composite extensionComposite = new Composite(sashForm, SWT.NONE);
+					extensionComposite.setLayout(new FillLayout(SWT.VERTICAL));
+					Label label = new Label(extensionComposite, SWT.NONE);
+					label.setText(extensionName + ":");
+					//Adds the layout the extension made
+					codeGeneratorFunctionAddExtension.createCodeGenerationContent(extensionComposite);
+				} catch (CoreException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -378,15 +381,13 @@ public class CodeGeneratorView implements PidescoView{
 		}
 		return uniqueName;
 	}
-	
+
 	//Creates the initial layout
 	private void createLayout(Composite parent) {
-		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
-		sashForm.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, true));
-		mainViewArea = new Composite(sashForm, SWT.NONE);
+		mainSashForm = new SashForm(parent, SWT.HORIZONTAL);
+		mainSashForm.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, true));
+		mainViewArea = new Composite(mainSashForm, SWT.NONE);
 		mainViewArea.setLayout(new FillLayout(SWT.VERTICAL));
-		extensionAddArea = new Composite(sashForm, SWT.NONE);
-		extensionAddArea.setLayout(new FillLayout(SWT.VERTICAL));
 	}
 
 	//Create and set the text of the buttons
