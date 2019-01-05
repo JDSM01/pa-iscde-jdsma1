@@ -21,7 +21,8 @@ Require-Bundle: pt.iscte.pidesco;bundle-version="0.1.0",
  org.eclipse.swt;bundle-version="3.108.0",
  org.eclipse.jdt.core,
  org.eclipse.core.resources;bundle-version="3.13.100",
- org.eclipse.core.runtime;bundle-version="3.15.0"
+ org.eclipse.core.runtime;bundle-version="3.15.0",
+ pa.iscde.javaTasks
 Export-Package: pt.iscte.pidesco.codegenerator.extensability,
  pt.iscte.pidesco.codegenerator.internal,
  pt.iscte.pidesco.codegenerator.service,
