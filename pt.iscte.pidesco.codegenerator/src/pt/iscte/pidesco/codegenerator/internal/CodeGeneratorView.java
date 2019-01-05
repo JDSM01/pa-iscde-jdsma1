@@ -341,30 +341,44 @@ public class CodeGeneratorView implements PidescoView{
 	private void createFunctionAddExtension() {
 		IConfigurationElement[] elements = model.getFunctionAddExtension();
 		if(elements.length > 0) {
+			//Creates the new area for the extensions
 			extensionAddArea = new Composite(mainSashForm, SWT.NONE);
 			extensionAddArea.setLayout(new FillLayout(SWT.VERTICAL));
-			Label extLabel = new Label(extensionAddArea, SWT.NONE);
-			extLabel.setText("Extension Functionalities:");
 			//Creates new division for each add extension
-			SashForm sashForm = new SashForm(extensionAddArea, SWT.VERTICAL);
-			sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			SashForm extensionSashForm = new SashForm(extensionAddArea, SWT.VERTICAL);
+			extensionSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			Label extLabel = new Label(extensionSashForm, SWT.NONE);
+			extLabel.setText("Extension Functionalities:");
 			for(IConfigurationElement element : elements) {
 				try {
 					CodeGeneratorFunctionAddExtension codeGeneratorFunctionAddExtension = (CodeGeneratorFunctionAddExtension) 
 							element.createExecutableExtension("class");
 					//Creates the base layout
 					String extensionName = element.getAttribute("name");
-					Composite extensionComposite = new Composite(sashForm, SWT.NONE);
-					extensionComposite.setLayout(new FillLayout(SWT.VERTICAL));
-					Label label = new Label(extensionComposite, SWT.NONE);
+					SashForm elementSashForm = new SashForm(extensionSashForm, SWT.VERTICAL);
+					elementSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+					Label label = new Label(elementSashForm, SWT.NONE);
 					label.setText(extensionName + ":");
 					//Adds the layout the extension made
-					codeGeneratorFunctionAddExtension.createCodeGenerationContent(extensionComposite);
+					codeGeneratorFunctionAddExtension.createCodeGenerationContent(elementSashForm);
+					//Sets the relative weights for each element
+					elementSashForm.setWeights(new int[] {1,10});
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
 			}
+			setSashWeights(extensionSashForm, elements.length);
 		}
+	}
+
+	//Sets the sashWeights to display the view with the proper distances
+	private void setSashWeights(SashForm sashForm, int length) {
+		int[] sashWeights = new int[length + 1];
+		sashWeights[0] = 1;
+		for(int i = 1; i<sashWeights.length; i++) {
+			sashWeights[i] = 10;
+		}
+		sashForm.setWeights(sashWeights);
 	}
 
 	//Returns an unique name for each extension so that there's no extensions with the same name
