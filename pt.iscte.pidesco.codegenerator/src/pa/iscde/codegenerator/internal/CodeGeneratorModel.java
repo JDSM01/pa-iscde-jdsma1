@@ -135,22 +135,40 @@ public class CodeGeneratorModel {
 		if(selection != null) {
 			String[] selectionSplitted = selection.split(" ");
 			if(selectionSplitted.length == 2) {
-				return new Field(selectionSplitted[0].trim(), selectionSplitted[1].trim().replaceAll(";", "")); 
+				String type = selectionSplitted[0].trim();
+				String name = selectionSplitted[1].trim().replaceAll(";", "");
+				return buildField(type,name);
 			}
 		}
 		return new Field("","");
 	}
 
-	//Turns a selection into a list of fields (if possible), given a split String
-	public List<Field> getTypeAndVariableNameToList(String selection, String splitString) {
+	private Field buildField(String type, String name) {
+		if(name.matches(".*\\d+.*")) { //is number
+			if(name.contains(".")) {
+				type = "float";
+			}else {
+				type = "int";
+			}
+			name = "number";
+		}
+		else if(name.startsWith("\"")) { //is string
+			type = "String";
+			name = name.replaceAll("\"", ""); 
+		}
+		return new Field(type, name);
+	}
+
+	//Turns a selection into a list of fields (if possible), given a regex
+	public List<Field> getTypeAndVariableNameToList(String selection, String regex) {
 		if(selection != null) {
 			List<Field> fields = new ArrayList<>();
-			String[] selectionSplitted = selection.split(splitString);
+			String[] selectionSplitted = selection.split(regex);
 			for(String field : selectionSplitted) {
 				String[] splittedField = field.split(" ");
 				int length = splittedField.length;
 				if(length >= 2) {
-					fields.add(new Field(splittedField[length - 2].trim(), splittedField[length - 1].trim()
+					fields.add(buildField(splittedField[length - 2].trim(), splittedField[length - 1].trim()
 							.replaceAll(";", "")));
 				}
 			}
@@ -170,7 +188,7 @@ public class CodeGeneratorModel {
 			List<Field> argumentsList = new ArrayList<>();
 			for(String argumentName : arguments) {
 				if(!argumentName.equals("")) {
-					argumentsList.add(new Field("Object", argumentName.trim()));
+					argumentsList.add(buildField("Object", argumentName));
 				}
 			}
 			return new SimpleMethod(splittedSelection[0].trim(), argumentsList);
