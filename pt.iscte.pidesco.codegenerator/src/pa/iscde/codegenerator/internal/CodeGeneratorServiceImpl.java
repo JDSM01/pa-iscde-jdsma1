@@ -25,7 +25,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateVariableName(String convertFrom, String languageType, boolean isStatic, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, null, convertFrom, line);
 		String variableName = codeStringGeneratorService.generateVariableName(convertFrom, languageType, isStatic);
 		javaService.insertText(file, variableName, codeGeneratorModel.getVariableOffset(), 0);
@@ -33,7 +33,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateVariableName(String convertFrom, Regex regex, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, null, convertFrom, line);
 		String variableName = codeStringGeneratorService.generateVariableName(convertFrom, regex);
 		javaService.insertText(file, variableName, codeGeneratorModel.getVariableOffset(), 0);
@@ -41,28 +41,28 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateIfConditionInLine(String condition, IfType ifType, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String ifString = codeStringGeneratorService.generateIfCondition(condition, ifType);
 		javaService.insertLine(file, ifString, line);
 	}
 
 	@Override
 	public void generateIfConditionInLine(String condition, String body, IfType ifType, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String ifString = codeStringGeneratorService.generateIfCondition(condition, body, ifType);
 		javaService.insertLine(file, ifString, line);
 	}
 
 	@Override
 	public void generateIfConditionInOffset(String condition, IfType ifType, int offset) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String ifString = codeStringGeneratorService.generateIfCondition(condition, ifType);
 		javaService.insertLine(file, ifString, offset);
 	}
 
 	@Override
 	public void generateIfConditionInOffset(String condition, String body, IfType ifType, int offset) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String ifString = codeStringGeneratorService.generateIfCondition(condition, body, ifType);
 		javaService.insertLine(file, ifString, offset);
 	}
@@ -81,7 +81,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateBindedVariable(List<Field> fields) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String bindedVariable = codeStringGeneratorService.generateBindedVariable(fields);
 		int endLine = codeGeneratorModel.getMethodEndLine();
@@ -92,7 +92,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateConstructor(String className, List<Field> arguments) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String constructor = codeStringGeneratorService.generateConstructor(className, arguments);
 		insertAfterField(file, constructor);
@@ -100,7 +100,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateConstructor(String className, List<Field> arguments, String input) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String constructor = codeStringGeneratorService.generateConstructor(className, arguments, input);
 		insertAfterField(file, constructor);
@@ -108,7 +108,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateConstructor(String className, List<Field> arguments, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String constructor = codeStringGeneratorService.generateConstructor(className, arguments);
 		javaService.insertLine(file, constructor, line);
@@ -116,7 +116,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateConstructor(String className, List<Field> arguments, String input, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String constructor = codeStringGeneratorService.generateConstructor(className, arguments, input);
 		javaService.insertLine(file, constructor, line);
@@ -124,7 +124,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateConstructorWithBinding(String className, List<Field> arguments) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String constructor = codeStringGeneratorService.generateConstructorWithBinding(className, arguments);
 		insertAfterField(file, constructor);
@@ -132,7 +132,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateConstructorWithBinding(String className, List<Field> arguments, String input) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String constructor = codeStringGeneratorService.generateConstructorWithBinding(className, arguments, input);
 		insertAfterField(file, constructor);
@@ -140,7 +140,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateConstructorWithBinding(String className, List<Field> arguments, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String constructor = codeStringGeneratorService.generateConstructorWithBinding(className, arguments);
 		javaService.insertLine(file, constructor, line);
@@ -148,7 +148,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateConstructorWithBinding(String className, List<Field> arguments, String input, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String constructor = codeStringGeneratorService.generateConstructorWithBinding(className, arguments, input);
 		javaService.insertLine(file, constructor, line);
@@ -156,7 +156,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateSetter(String variableType, String variableName) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String setter = codeStringGeneratorService.generateSetter(variableType, variableName);
 		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
@@ -165,14 +165,14 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateSetter(String variableType, String variableName, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String setter = codeStringGeneratorService.generateSetter(variableType, variableName);
 		javaService.insertLine(file, setter, line);
 	}
 
 	@Override
 	public void generateSetter(String variableType, String variableName, String methodName) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String setter = codeStringGeneratorService.generateSetter(variableType, variableName, methodName);
 		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
@@ -181,14 +181,14 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateSetter(String variableType, String variableName, String methodName, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String setter = codeStringGeneratorService.generateSetter(variableType, variableName, methodName);
 		javaService.insertLine(file, setter, line);
 	}
 
 	@Override
 	public void generateGetter(String variableType, String variableName) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String getter = codeStringGeneratorService.generateGetter(variableType, variableName);
 		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
@@ -197,14 +197,14 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateGetter(String variableType, String variableName, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String getter = codeStringGeneratorService.generateGetter(variableType, variableName);
 		javaService.insertLine(file, getter, line);
 	}
 
 	@Override
 	public void generateGetter(String variableType, String variableName, String methodName) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String getter = codeStringGeneratorService.generateGetter(variableType, variableName, methodName);
 		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
@@ -213,14 +213,14 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 
 	@Override
 	public void generateGetter(String variableType, String variableName, String methodName, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String getter = codeStringGeneratorService.generateGetter(variableType, variableName, methodName);
 		javaService.insertLine(file, getter, line);
 	}
 
 	@Override
 	public void generateField(AcessLevel acessLevel, boolean isStatic, boolean isFinal, List<Field> fields) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file);
 		String field = codeStringGeneratorService.generateField(acessLevel, isStatic, isFinal, fields);
 		insertAfterField(file, field);
@@ -229,7 +229,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 	@Override
 	public void generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments);
 		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
@@ -239,7 +239,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 	@Override
 	public void generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments, returnValue);
 		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
@@ -249,7 +249,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 	@Override
 	public void generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue, String body) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments, returnValue, body);
 		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
@@ -259,7 +259,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 	@Override
 	public void generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments);
 		javaService.insertLine(file, method, line);
 	}
@@ -267,7 +267,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 	@Override
 	public void generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments, returnValue);
 		javaService.insertLine(file, method, line);
 	}
@@ -275,7 +275,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 	@Override
 	public void generateMethod(AcessLevel acessLevel, boolean isStatic, String returnType, String methodName,
 			List<Field> arguments, String returnValue, String body, int line) {
-		File file = codeGeneratorModel.getFile();
+		File file = codeGeneratorModel.getOpenedFile();
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments, returnValue, body);
 		javaService.insertLine(file, method, line);
 	}
