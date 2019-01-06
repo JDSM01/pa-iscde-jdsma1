@@ -471,7 +471,7 @@ public class CodeGeneratorView implements PidescoView{
 		errorLabel.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
 	}
 
-	//Gets end of file offset if there's no method
+	//Gets end of file line if there's no method
 	private int getCorrectLine(int methodEndLine) {
 		int endLine = methodEndLine <= 0 ? model.getEndOfFileLine() - 1 : methodEndLine;
 		return endLine;
@@ -487,7 +487,7 @@ public class CodeGeneratorView implements PidescoView{
 		}
 	}
 
-	private void insertBindedVariable(File file, String selection, int offset, List<Field> fields) {
+	private void insertBindedVariable(File file, String selection, int line, List<Field> fields) {
 		String bindedVariable = "";
 		if(!fields.isEmpty()) {
 			bindedVariable = currentCodeGeneratorService.generateBindedVariable(fields);
@@ -495,7 +495,7 @@ public class CodeGeneratorView implements PidescoView{
 		else {
 			bindedVariable = currentCodeGeneratorService.generateBindedVariable(Arrays.asList(new Field("", selection)));
 		}
-		insertLine(file, bindedVariable, offset + 1);
+		insertLine(file, bindedVariable, line + 1);
 	}
 
 	//Uses the JavaEditorServices to insert a string or set an error message if there's an error
@@ -530,9 +530,9 @@ public class CodeGeneratorView implements PidescoView{
 
 	//Inserts a string after the last field, or after the class initial line if there are no fields
 	private void insertAfterField(File file, String constructor) {
-		int fieldEndOffset = model.getFieldEndLine();
-		int offset = fieldEndOffset == 0 ? model.getClassInitLine() : fieldEndOffset;
-		insertLine(file, constructor, offset);	
+		int fieldEndLine = model.getFieldEndLine();
+		int endLine = fieldEndLine <= 0 ? model.getClassInitLine() : fieldEndLine;
+		insertLine(file, constructor, endLine);	
 
 	}
 }

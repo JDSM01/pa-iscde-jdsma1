@@ -280,18 +280,18 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		javaService.insertLine(file, method, line);
 	}
 
-	//Gets end of file offset if there's no method
+	//Gets end of file line if there's no method
 	private int getCorrectLine(int methodEndLine) {
-		int endLine = methodEndLine == 0 ? codeGeneratorModel.getEndOfFileLine() - 1 : methodEndLine + 2;
+		int endLine = methodEndLine <= 0 ? codeGeneratorModel.getEndOfFileLine() - 1 : methodEndLine + 2;
 		return endLine;
 	}
 
 	//Inserts a string after the last field or after the class initial line if there's no fields
 	private void insertAfterField(File file, String constructor) {
-		int fieldEndOffset = codeGeneratorModel.getFieldEndLine();
-		int offset = fieldEndOffset == 0 ? codeGeneratorModel.getClassInitLine() : fieldEndOffset;
-		if(offset != 0) {
-			javaService.insertLine(file, constructor, offset);	
+		int fieldEndLine = codeGeneratorModel.getFieldEndLine();
+		int endLine = fieldEndLine <= 0 ? codeGeneratorModel.getClassInitLine() : fieldEndLine;
+		if(endLine <= 0) {
+			javaService.insertLine(file, constructor, endLine);	
 		}
 	}
 }
