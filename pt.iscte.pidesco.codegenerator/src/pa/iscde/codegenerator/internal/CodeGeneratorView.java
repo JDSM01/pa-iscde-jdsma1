@@ -323,7 +323,7 @@ public class CodeGeneratorView implements PidescoView{
 					int linesAdded = 0;
 					for(MatchResult matchResult : fieldResults) {
 						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
-								matchResult.getLineNumber() - 1);
+								matchResult.getLineNumber() + linesAdded - 1);
 						linesAdded++;
 						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
 						matchResult.getLineNumber() + linesAdded);
