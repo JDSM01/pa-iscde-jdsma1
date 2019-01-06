@@ -185,11 +185,16 @@ public class CodeGeneratorController implements CodeStringGeneratorService{
 		String returnString = "return null;";
 		if(returnValue != null && !returnValue.equals("")) {
 			returnString = "return " + returnValue + ";";
-		}else if(returnType != null && returnType.equals("int")) {
-			returnString = "return -1;";
-		}
-		else if(returnType != null && returnType.equals("void")) {
-			returnString = "";
+		}else if(returnType != null) {
+			if(returnType.equals("int")) {
+				returnString = "return -1;";
+			}
+			else if(returnType.toLowerCase().equals("boolean")){
+				returnString = "return false;";
+			}
+			else if(returnType.equals("void")) {
+				returnString = "";
+			}
 		}
 		return returnString;
 	}

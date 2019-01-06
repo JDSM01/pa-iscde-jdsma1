@@ -116,10 +116,10 @@ public class EditorVisitor extends ASTVisitor{
 	 */
 	@Override
 	public boolean visit(VariableDeclarationFragment node) {
-		if(variableSearchExpression != null) {
+		if(variableSearchExpression != null && !variableSearchExpression.equals("")) {
 			Expression expression = node.getInitializer();
 			String initializer = "";
-			String expressionType = "";
+			String expressionType = "void";
 			if(expression != null) {
 				initializer = expression.toString();
 			}
@@ -131,10 +131,8 @@ public class EditorVisitor extends ASTVisitor{
 				else if(nodeParent instanceof FieldDeclaration) {
 					expressionType = ((FieldDeclaration) nodeParent).getType().toString();
 				}
-			}else {
-				expressionType = "void";
+				codeGeneratorModel.setMethodType(expressionType);
 			}
-			codeGeneratorModel.setMethodType(expressionType);
 			if(line == -1 || line == sourceLine(node)) {
 				codeGeneratorModel.setVariableOffset(node.getStartPosition() + expressionType.length());
 			}

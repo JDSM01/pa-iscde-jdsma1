@@ -22,10 +22,11 @@ import pt.iscte.pidesco.projectbrowser.model.SourceElement;
  *
  */
 public class CodeGeneratorModel {
+	private static final String DEFAULT_METHOD_TYPE = "void";
 	private final JavaEditorServices javaService;
 	private int methodEndLine;
 	private int fieldEndLine;
-	private String methodType;
+	private String methodType = DEFAULT_METHOD_TYPE;
 	private int endOfFile;
 	private int variableOffset;
 	private int startLine;
@@ -138,22 +139,40 @@ public class CodeGeneratorModel {
 		if(selection != null) {
 			String[] selectionSplitted = selection.split(" ");
 			if(selectionSplitted.length == 2) {
-				return new Field(selectionSplitted[0].trim(), selectionSplitted[1].trim().replaceAll(";", "")); 
+				String type = selectionSplitted[0].trim();
+				String name = selectionSplitted[1].trim().replaceAll(";", "");
+				return buildField(type,name);
 			}
 		}
 		return new Field("","");
 	}
 
-	//Turns a selection into a list of fields (if possible), given a split String
-	public List<Field> getTypeAndVariableNameToList(String selection, String splitString) {
+	private Field buildField(String type, String name) {
+		if(name.matches(".*\\d+.*")) { //is number
+			if(name.contains(".")) {
+				type = "float";
+			}else {
+				type = "int";
+			}
+			name = "number";
+		}
+		else if(name.startsWith("\"")) { //is string
+			type = "String";
+			name = name.replaceAll("\"", ""); 
+		}
+		return new Field(type, name);
+	}
+
+	//Turns a selection into a list of fields (if possible), given a regex
+	public List<Field> getTypeAndVariableNameToList(String selection, String regex) {
 		if(selection != null) {
 			List<Field> fields = new ArrayList<>();
-			String[] selectionSplitted = selection.split(splitString);
+			String[] selectionSplitted = selection.split(regex);
 			for(String field : selectionSplitted) {
 				String[] splittedField = field.split(" ");
 				int length = splittedField.length;
 				if(length >= 2) {
-					fields.add(new Field(splittedField[length - 2].trim(), splittedField[length - 1].trim()
+					fields.add(buildField(splittedField[length - 2].trim(), splittedField[length - 1].trim()
 							.replaceAll(";", "")));
 				}
 			}
@@ -173,7 +192,7 @@ public class CodeGeneratorModel {
 			List<Field> argumentsList = new ArrayList<>();
 			for(String argumentName : arguments) {
 				if(!argumentName.equals("")) {
-					argumentsList.add(new Field("Object", argumentName.trim()));
+					argumentsList.add(buildField("Object", argumentName));
 				}
 			}
 			return new SimpleMethod(splittedSelection[0].trim(), argumentsList);
@@ -220,13 +239,15 @@ public class CodeGeneratorModel {
 	//Returns the type of a certain method and erases the saved method type
 	public String getMethodType() {
 		String method = methodType;
-		methodType = null;
+		methodType = DEFAULT_METHOD_TYPE;
 		return method;
 	}
 
 	//Sets the method type of a certain method
 	public void setMethodType(String expressionType) {
-		this.methodType = expressionType;
+		if(methodType.equals(DEFAULT_METHOD_TYPE)) {
+			this.methodType = expressionType;
+		}
 	}
 
 	//Returns the line of the last line of a certain file
@@ -285,7 +306,7 @@ public class CodeGeneratorModel {
 
 	//Returns the correct error value depending on the value of the generatedString and position or null if there's no error
 	public String getError(String generatedString, int position) {
-		if(position == 0) {
+		if(position <= 0) {
 			return "No class statement found";
 		}
 		else if(generatedString == null) {
