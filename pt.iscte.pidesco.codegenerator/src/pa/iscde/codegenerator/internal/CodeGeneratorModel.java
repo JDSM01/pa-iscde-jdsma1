@@ -26,7 +26,7 @@ public class CodeGeneratorModel {
 	private final JavaEditorServices javaService;
 	private int methodEndLine;
 	private int fieldEndLine;
-	private String methodType = DEFAULT_METHOD_TYPE;
+	private String methodType;
 	private int endOfFile;
 	private int variableOffset;
 	private int startLine;
@@ -34,6 +34,7 @@ public class CodeGeneratorModel {
 
 	public CodeGeneratorModel(JavaEditorServices javaService) {
 		this.javaService = javaService;
+		this.methodType = DEFAULT_METHOD_TYPE;
 	}
 
 	//Returns open filed
