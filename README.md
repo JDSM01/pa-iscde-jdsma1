@@ -1,5 +1,6 @@
 # Pidesco Code Generator
-The purpose of this component is to incorporate in the pidesco ide the possibility to generate code by pressing the button corresponding to the generation function that the user wants. 
+The purpose of this component is to incorporate in the pidesco ide the possibility to generate code by pressing the button corresponding to the generation function that the user wants. This component is an extension of the pidescoview and uses the JavaEditorServices and ProjectBrowsersServices present in this project (https://github.com/andre-santos-pt/pidesco).
+
 It provides the following services:
 * CodeStringGeneratorService (which is also the extension point) - This service is responsible for building the strings of the different functionalities of the project. It builds strings for:
 * * VariableName
