@@ -16,3 +16,5 @@ It provides the following services:
 It provides the following extension point:
 * CodeGenerationRelacement: Allows the person who extends it to replace the way the strings are generated. To use this extension a name and an implementation of CodeStringGeneratorService.java must be provided.
 * CodeGenerationAdd: Allows the person who extends it to add new functionalities. To use this extension an implementation of CodeGeneratorFunctionAddExtension.java must be provided.
+
+This project includes an integration with the Search Component (https://github.com/TiagoMartinhoS/pa-iscde-tfmss1). It uses its services to search for specified string and comment all field and method occurences. It extends its extension point by adding the possibility to search for all the occurences of a variable.
