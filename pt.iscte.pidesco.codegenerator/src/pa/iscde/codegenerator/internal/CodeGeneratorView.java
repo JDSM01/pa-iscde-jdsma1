@@ -309,7 +309,7 @@ public class CodeGeneratorView implements PidescoView{
 			}
 		};
 	}
-	
+
 	private SelectionListener setSearchListener() {
 		return new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -322,21 +322,10 @@ public class CodeGeneratorView implements PidescoView{
 					List<MatchResult> methodResults = searchService.searchMethod(selection, root);
 					int linesAdded = 0;
 					for(MatchResult matchResult : fieldResults) {
-						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
-								matchResult.getLineNumber() + linesAdded - 1);
-						linesAdded++;
-						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
-						matchResult.getLineNumber() + linesAdded);
-						linesAdded++;
+						linesAdded = insertFieldComments(matchResult, linesAdded);
 					}
 					for(MatchResult matchResult : methodResults) {
-						model.parse(matchResult.getFile(), matchResult.getNodeName(), null);
-						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
-								matchResult.getLineNumber() + linesAdded - 1);
-						linesAdded++;
-						javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
-							model.getMethodEndLine() + 1);
-						linesAdded++;
+						linesAdded = insertMethodComments(matchResult, linesAdded);
 					}
 				}
 				else {
@@ -346,6 +335,27 @@ public class CodeGeneratorView implements PidescoView{
 		};
 	}
 
+	private int insertFieldComments(MatchResult matchResult, int linesAdded) {
+		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
+				matchResult.getLineNumber() + linesAdded - 1);
+		linesAdded++;
+		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
+				matchResult.getLineNumber() + linesAdded);
+		linesAdded++;
+		return linesAdded;
+	}
+	
+	private int insertMethodComments(MatchResult matchResult, int linesAdded) {
+		model.parse(matchResult.getFile(), matchResult.getNodeName(), null);
+		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
+				matchResult.getLineNumber() + linesAdded - 1);
+		linesAdded++;
+		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
+				model.getMethodEndLine() + 1);
+		linesAdded++;
+		return linesAdded;
+	}
+	
 	//Handles the creation of all extensions
 	private void createExtensions() {
 		createFunctionReplacementExtension();
