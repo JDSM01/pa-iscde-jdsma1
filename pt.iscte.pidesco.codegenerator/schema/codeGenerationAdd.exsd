@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="pt.iscte.pidesco.codegenerator" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="pa.iscde.codegenerator" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="pt.iscte.pidesco.codegenerator" id="codeGenerationAdd" name="codeGenerationAdd"/>
+         <meta.schema plugin="pa.iscde.codegenerator" id="codeGenerationAdd" name="codeGenerationAdd"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+      		[This extension point enables whoever extends it to add functionalities to the codeGenerator component]
       </documentation>
    </annotation>
 
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":pt.iscte.pidesco.codegenerator.extensability.CodeGeneratorFunctionAddExtension"/>
+                  <meta.attribute kind="java" basedOn=":pa.iscde.codegenerator.extensability.CodeGeneratorFunctionAddExtension"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -83,7 +83,7 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         [pa.iscde.demo.AddExtensionTest.java]
       </documentation>
    </annotation>
 

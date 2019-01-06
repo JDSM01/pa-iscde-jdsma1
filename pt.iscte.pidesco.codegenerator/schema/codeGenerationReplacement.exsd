@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="pt.iscte.pidesco.codegenerator.codeGenerationReplacement" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="pa.iscde.codegenerator.codeGenerationReplacement" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="pt.iscte.pidesco.codegenerator.codeGenerationReplacement" id="codeGenerationReplacement" name="CodeGenerationReplacement"/>
+         <meta.schema plugin="pa.iscde.codegenerator.codeGenerationReplacement" id="codeGenerationReplacement" name="CodeGenerationReplacement"/>
       </appinfo>
       <documentation>
          [This extension point enables whoever extends it to give their implementation of each method]
@@ -62,7 +62,7 @@
                   [This is the class that will re-implement the methods]
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":pt.iscte.pidesco.codegenerator.service.CodeGeneratorService"/>
+                  <meta.attribute kind="java" basedOn=":pa.iscde.codegenerator.service.CodeGeneratorService"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -83,7 +83,7 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Build the strings in a different way that was not tought in the original service]
+         [pa.iscde.demo.CGS.java]
       </documentation>
    </annotation>
 
@@ -92,7 +92,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         [Build the strings in a different way that was not tought in the original service]
       </documentation>
    </annotation>
 

@@ -38,14 +38,14 @@ public class CodeGeneratorModel {
 	}
 
 	//Returns open filed
-	public File getFile() {
+	public File getOpenedFile() {
 		return javaService.getOpenedFile();
 	}
 
 	//Returns a ITextSelection in the opened file
 	public ITextSelection getSelection() {
-		File file = getFile();
-		if(getFile() != null) {
+		File file = getOpenedFile();
+		if(getOpenedFile() != null) {
 			javaService.getTextSelected(file);
 		}
 		return null;
@@ -71,7 +71,7 @@ public class CodeGeneratorModel {
 
 	//Returns the name of the opened file
 	public String getFileName() {
-		File file = getFile();
+		File file = getOpenedFile();
 		if(file != null) {
 			return file.getName();
 		}
@@ -92,7 +92,7 @@ public class CodeGeneratorModel {
 	//Returns an object containing the opened file, the string of the ITextSelection and the sum of the offset and length 
 	//of the ITextSelection
 	public CodeGeneratorResponse getCodeGeneratorResponseWithLengthOffset() {
-		File file = getFile();
+		File file = getOpenedFile();
 		String selectionText = "";
 		int offset = 0;
 		if(file != null) {
@@ -107,7 +107,7 @@ public class CodeGeneratorModel {
 
 	//Returns an object contain the opened file, the string of the ITextSelection and the end line of the ITextSelection
 	public CodeGeneratorResponse getCodeGeneratorResponseWithEndLine() {
-		File file = getFile();
+		File file = getOpenedFile();
 		String selectionText = "";
 		int endLine = 0;
 		if(file != null) {
@@ -122,7 +122,7 @@ public class CodeGeneratorModel {
 
 	//Returns an object containing the opened file, the string of the ITextSelection and the offset of the ITextSelection
 	public CodeGeneratorResponse getCodeGeneratorResponseWithDefaultOffset() {
-		File file = getFile();
+		File file = getOpenedFile();
 		String selectionText = "";
 		int offset = -1;
 		if(file != null) {
