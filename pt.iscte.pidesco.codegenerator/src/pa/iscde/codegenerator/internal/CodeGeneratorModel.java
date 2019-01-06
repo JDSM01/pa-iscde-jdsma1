@@ -333,6 +333,7 @@ public class CodeGeneratorModel {
 		}
 	}
 
+	//Adds the matchResult to the list of searchResults
 	public void addSearchResult(MatchResult matchResult) {
 		if(searchResults == null) {
 			searchResults = new ArrayList<>();
@@ -340,9 +341,12 @@ public class CodeGeneratorModel {
 		searchResults.add(matchResult);
 	}
 
+	//Gets the matchResults from the search and resets the list
 	public List<MatchResult> getSearchResults(){
 		if(searchResults != null) {
-			return searchResults;
+			List<MatchResult> matchResults = searchResults;
+			searchResults = Collections.emptyList();
+			return matchResults;
 		}
 		return Collections.emptyList();
 	}
