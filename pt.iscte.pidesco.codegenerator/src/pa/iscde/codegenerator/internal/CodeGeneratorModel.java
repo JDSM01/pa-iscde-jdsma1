@@ -12,7 +12,10 @@ import org.eclipse.jface.text.ITextSelection;
 
 import pa.iscde.codegenerator.wrappers.Field;
 import pa.iscde.codegenerator.wrappers.SimpleMethod;
+import pa.iscde.search.model.MatchResult;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+import pt.iscte.pidesco.projectbrowser.model.PackageElement;
+import pt.iscte.pidesco.projectbrowser.model.SourceElement;
 /**
  * This class is responsible to give the view the required objects and information.
  * @author D01
@@ -26,6 +29,7 @@ public class CodeGeneratorModel {
 	private int endOfFile;
 	private int variableOffset;
 	private int startLine;
+	private List<MatchResult> searchResults;
 
 	public CodeGeneratorModel(JavaEditorServices javaService) {
 		this.javaService = javaService;
@@ -272,12 +276,12 @@ public class CodeGeneratorModel {
 		IExtensionRegistry reg = Platform.getExtensionRegistry();
 		return reg.getConfigurationElementsFor("pa.iscde.codegenerator.codeGenerationReplacement");
 	}
-	
+
 	//Gets the function add extension of the project
-		public IConfigurationElement[] getFunctionAddExtension() {
-			IExtensionRegistry reg = Platform.getExtensionRegistry();
-			return reg.getConfigurationElementsFor("pa.iscde.codegenerator.codeGenerationAdd");
-		}
+	public IConfigurationElement[] getFunctionAddExtension() {
+		IExtensionRegistry reg = Platform.getExtensionRegistry();
+		return reg.getConfigurationElementsFor("pa.iscde.codegenerator.codeGenerationAdd");
+	}
 
 	//Returns the correct error value depending on the value of the generatedString and position or null if there's no error
 	public String getError(String generatedString, int position) {
@@ -290,5 +294,34 @@ public class CodeGeneratorModel {
 			return "Selection was not valid";
 		}
 		return null;
+	}
+
+	//Search Integration methods
+
+	public void searchParse(final SourceElement rootPackage, String input) {
+		if (rootPackage.isClass()) {
+			File file = rootPackage.getFile();
+			if(file != null) {
+				javaService.parseFile(file, new EditorVisitor(this, input, file));
+			}
+		} else {
+			for (SourceElement c : ((PackageElement) rootPackage).getChildren()) {
+				searchParse(c, input);
+			}
+		}
+	}
+
+	public void addSearchResult(MatchResult matchResult) {
+		if(searchResults == null) {
+			searchResults = new ArrayList<>();
+		}
+		searchResults.add(matchResult);
+	}
+
+	public List<MatchResult> getSearchResults(){
+		if(searchResults != null) {
+			return searchResults;
+		}
+		return Collections.emptyList();
 	}
 }
