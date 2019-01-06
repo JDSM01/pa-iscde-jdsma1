@@ -19,10 +19,11 @@ import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
  *
  */
 public class CodeGeneratorModel {
+	private static final String DEFAULT_METHOD_TYPE = "void";
 	private final JavaEditorServices javaService;
 	private int methodEndLine;
 	private int fieldEndLine;
-	private String methodType;
+	private String methodType = DEFAULT_METHOD_TYPE;
 	private int endOfFile;
 	private int variableOffset;
 	private int startLine;
@@ -216,13 +217,15 @@ public class CodeGeneratorModel {
 	//Returns the type of a certain method and erases the saved method type
 	public String getMethodType() {
 		String method = methodType;
-		methodType = null;
+		methodType = DEFAULT_METHOD_TYPE;
 		return method;
 	}
 
 	//Sets the method type of a certain method
 	public void setMethodType(String expressionType) {
-		this.methodType = expressionType;
+		if(methodType.equals(DEFAULT_METHOD_TYPE)) {
+			this.methodType = expressionType;
+		}
 	}
 
 	//Returns the line of the last line of a certain file
@@ -272,16 +275,16 @@ public class CodeGeneratorModel {
 		IExtensionRegistry reg = Platform.getExtensionRegistry();
 		return reg.getConfigurationElementsFor("pa.iscde.codegenerator.codeGenerationReplacement");
 	}
-	
+
 	//Gets the function add extension of the project
-		public IConfigurationElement[] getFunctionAddExtension() {
-			IExtensionRegistry reg = Platform.getExtensionRegistry();
-			return reg.getConfigurationElementsFor("pa.iscde.codegenerator.codeGenerationAdd");
-		}
+	public IConfigurationElement[] getFunctionAddExtension() {
+		IExtensionRegistry reg = Platform.getExtensionRegistry();
+		return reg.getConfigurationElementsFor("pa.iscde.codegenerator.codeGenerationAdd");
+	}
 
 	//Returns the correct error value depending on the value of the generatedString and position or null if there's no error
 	public String getError(String generatedString, int position) {
-		if(position == 0) {
+		if(position <= 0) {
 			return "No class statement found";
 		}
 		else if(generatedString == null) {

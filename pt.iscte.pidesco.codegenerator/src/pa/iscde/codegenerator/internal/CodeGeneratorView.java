@@ -473,7 +473,7 @@ public class CodeGeneratorView implements PidescoView{
 
 	//Gets end of file offset if there's no method
 	private int getCorrectLine(int methodEndLine) {
-		int endLine = methodEndLine == 0 ? model.getEndOfFileLine() - 1 : methodEndLine;
+		int endLine = methodEndLine <= 0 ? model.getEndOfFileLine() - 1 : methodEndLine;
 		return endLine;
 	}
 

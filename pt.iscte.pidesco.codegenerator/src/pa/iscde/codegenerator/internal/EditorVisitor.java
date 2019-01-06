@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 /**
  * This class is responsible to inspect the file and set the necessary information in the model
@@ -67,7 +68,7 @@ public class EditorVisitor extends ASTVisitor{
 	private int endLine(ASTNode node) {
 		return ((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition() + node.getLength());
 	}	
-	
+
 	//visits class and sets in the module the line where the class statement is and the offset of the end of the file
 	@Override
 	public boolean visit(TypeDeclaration node) {
@@ -99,19 +100,23 @@ public class EditorVisitor extends ASTVisitor{
 	 */
 	@Override
 	public boolean visit(VariableDeclarationFragment node) {
-		if(variableSearchExpression != null) {
+		if(variableSearchExpression != null && !variableSearchExpression.equals("")) {
 			Expression expression = node.getInitializer();
 			String initializer = "";
-			String expressionType = "";
+			String expressionType = "void";
 			if(expression != null) {
 				initializer = expression.toString();
 			}
-			if(initializer.equals(variableSearchExpression) && node.getParent() instanceof FieldDeclaration) {
-				expressionType = ((FieldDeclaration) node.getParent()).getType().toString();
-			}else {
-				expressionType = "void";
+			if(initializer.equals(variableSearchExpression)) {
+				ASTNode nodeParent = node.getParent();
+				if(nodeParent instanceof VariableDeclarationStatement) {
+					expressionType = ((VariableDeclarationStatement) nodeParent).getType().toString();
+				}
+				else if(nodeParent instanceof FieldDeclaration) {
+					expressionType = ((FieldDeclaration) nodeParent).getType().toString();
+				}
+				codeGeneratorModel.setMethodType(expressionType);
 			}
-			codeGeneratorModel.setMethodType(expressionType);
 			if(line == -1 || line == sourceLine(node)) {
 				codeGeneratorModel.setVariableOffset(node.getStartPosition() + expressionType.length());
 			}
