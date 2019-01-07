@@ -1,27 +1,20 @@
 package pa.iscde.demo;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
+import java.util.ArrayList;
+import java.util.List;
 
 import pa.iscde.codegenerator.extensability.CodeGeneratorFunctionAddExtension;
-import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+import pa.iscde.codegenerator.extensability.Functionality;
 
 
 public class AddExtensionTest implements CodeGeneratorFunctionAddExtension{
 
 	@Override
-	public void createCodeGenerationContent(Composite viewArea) {
-		JavaEditorServices javaServices = Activator.getInstance().getJavaService();
-		Button testButton = new Button(viewArea, SWT.PUSH);
-		testButton.setText("Add extension test");
-		testButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				javaServices.insertTextAtCursor("public void thisIsJustAnAddExtensionTest(){\n\n}");
-			}
-		});
+	public List<Functionality> getCodeGenerationContent() {
+		List<Functionality> functionalities = new ArrayList<>();
+		functionalities.add(new Functionality("addTest1", "public void thisIsJustAnAddExtensionTest(){\n\n}", 
+				CodePlacementLocation.END_OF_FIELDS));
+		return functionalities;
 	}
 
 }

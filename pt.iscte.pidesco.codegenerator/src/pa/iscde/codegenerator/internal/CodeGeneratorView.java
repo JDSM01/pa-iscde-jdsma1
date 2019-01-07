@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,9 +24,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import pa.iscde.codegenerator.extensability.CodeGeneratorFunctionAddExtension;
+import pa.iscde.codegenerator.extensability.CodeGeneratorFunctionAddExtension.CodePlacementLocation;
 import pa.iscde.codegenerator.extensability.CodeStringGeneratorService;
 import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.AcessLevel;
 import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.IfType;
+import pa.iscde.codegenerator.extensability.Functionality;
 import pa.iscde.codegenerator.wrappers.Field;
 import pa.iscde.codegenerator.wrappers.SimpleMethod;
 import pa.iscde.search.model.MatchResult;
@@ -344,7 +347,7 @@ public class CodeGeneratorView implements PidescoView{
 		linesAdded++;
 		return linesAdded;
 	}
-	
+
 	private int insertMethodComments(MatchResult matchResult, int linesAdded) {
 		model.parse(matchResult.getFile(), matchResult.getNodeName(), null);
 		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
@@ -355,7 +358,7 @@ public class CodeGeneratorView implements PidescoView{
 		linesAdded++;
 		return linesAdded;
 	}
-	
+
 	//Handles the creation of all extensions
 	private void createExtensions() {
 		createFunctionReplacementExtension();
@@ -414,14 +417,46 @@ public class CodeGeneratorView implements PidescoView{
 					Label label = new Label(elementSashForm, SWT.NONE);
 					label.setText(extensionName + ":");
 					//Adds the layout the extension made
-					codeGeneratorFunctionAddExtension.createCodeGenerationContent(elementSashForm);
+					List<Functionality> functionalities = codeGeneratorFunctionAddExtension.getCodeGenerationContent();
+					addFunctionalities(functionalities, elementSashForm);
 					//Sets the relative weights for each element
-					elementSashForm.setWeights(new int[] {1,10});
+					setSashWeights(elementSashForm, functionalities.size());
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
 			}
 			setSashWeights(extensionSashForm, elements.length);
+		}
+	}
+
+	private void addFunctionalities(List<Functionality> functionalities, SashForm viewArea) {
+		for(Functionality functionality : functionalities) {
+			Button button = new Button(viewArea, SWT.PUSH);
+			button.setText(functionality.getButtonName());
+			button.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					File file = model.getOpenedFile();
+					if(file != null) {
+						String generatedCode = functionality.getGeneratedCode();
+						if(functionality.hasPlacementLocation()) {
+							generateCode(file, generatedCode, functionality.getPlacementLocation());
+						}
+						else {
+							model.parse(file);
+							int line = functionality.getLine();
+							if(line < model.getEndOfFileLine()) {
+								insertLine(file, generatedCode, line);
+							}
+							else {
+								setErrorMessage("Invalid line number");
+							}
+						}
+					}
+					else {
+						setErrorMessage(NO_FILE_OPENED_ERROR);
+					}
+				}
+			});
 		}
 	}
 
@@ -589,7 +624,51 @@ public class CodeGeneratorView implements PidescoView{
 	private void insertAfterField(File file, String constructor) {
 		int fieldEndLine = model.getFieldEndLine();
 		int endLine = fieldEndLine <= 0 ? model.getClassInitLine() : fieldEndLine;
-		insertLine(file, constructor, endLine);	
+		insertLine(file, constructor, endLine);
+	}
 
+	private void generateCode(File file, String generatedCode, CodePlacementLocation placementLocation) {
+		switch(placementLocation) {
+		case BEGIN_OF_CLASS:
+			model.parse(file);
+			insertLine(file, generatedCode, model.getClassInitLine());
+			break;
+		case END_OF_CLASS:
+			model.parse(file);
+			insertLine(file, generatedCode, model.getEndOfFileLine() - 1);
+			break;
+		case END_OF_FIELDS:
+			model.parse(file);
+			insertAfterField(file, generatedCode);
+			break;
+		case END_OF_CONSTRUCTOR:
+			model.parse(file, model.getFileNameWithoutExtension(), null);
+			insertLine(file, generatedCode, getCorrectLine(model.getMethodEndLine()));
+			break;
+		case REPLACEMENT_OF_SELECTION:
+			int offset = model.getOffset();
+			int selectionLength = model.getSelection().getLength();
+			insertText(file, generatedCode, offset, selectionLength);
+			break;
+		case AFTER_SELECTION:
+			offset = model.getCodeGeneratorResponseWithLengthOffset().getOffset();
+			insertText(file, generatedCode, offset + 1, 0);
+			break;
+		case BEFORE_SELECTION:
+			offset = model.getOffset();
+			insertText(file, generatedCode, offset - 1, 0);
+			break;
+		case LINE_AFTER_SELECTION:
+			ITextSelection selection = model.getSelection();
+			insertLine(file, generatedCode, selection.getEndLine() + 1);
+			break;
+		case LINE_BEFORE_SELECTION:
+			selection = model.getSelection();
+			insertLine(file, generatedCode, selection.getStartLine() - 1);
+			break;
+		case CURSOR_POSITION:
+			javaService.insertTextAtCursor(generatedCode);
+			break;
+		}
 	}
 }

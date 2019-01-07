@@ -45,8 +45,8 @@ public class CodeGeneratorModel {
 	//Returns a ITextSelection in the opened file
 	public ITextSelection getSelection() {
 		File file = getOpenedFile();
-		if(getOpenedFile() != null) {
-			javaService.getTextSelected(file);
+		if(file != null) {
+			return javaService.getTextSelected(file);
 		}
 		return null;
 	}
