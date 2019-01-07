@@ -1,6 +1,8 @@
 package pa.iscde.codegenerator.internal;
 
 
+import java.io.File;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -10,6 +12,8 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
+
+import pa.iscde.search.model.MatchResult;
 
 /**
  * This class is responsible to inspect the file and set the necessary information in the model
@@ -21,6 +25,7 @@ public class EditorVisitor extends ASTVisitor{
 	private final String methodSearchExpression;
 	private final String variableSearchExpression;
 	private final int line;
+	private final File file;
 
 	/**
 	 * This constructor is used in case there's no need to search for a specific term
@@ -31,6 +36,7 @@ public class EditorVisitor extends ASTVisitor{
 		this.methodSearchExpression = null;
 		this.variableSearchExpression = null;
 		this.line = -1;
+		this.file = null;
 	}
 
 	/**
@@ -44,6 +50,7 @@ public class EditorVisitor extends ASTVisitor{
 		this.methodSearchExpression = methodSearchExpression;
 		this.variableSearchExpression = variableSearchExpression;
 		this.line = -1;
+		this.file = null;
 	}
 
 	/**
@@ -59,6 +66,15 @@ public class EditorVisitor extends ASTVisitor{
 		this.methodSearchExpression = methodSearchExpression;
 		this.variableSearchExpression = variableSearchExpression;
 		this.line = line;
+		this.file = null;
+	}
+
+	public EditorVisitor(CodeGeneratorModel codeGeneratorModel, String variableSearchExpression, File file) {
+		this.codeGeneratorModel = codeGeneratorModel;
+		this.variableSearchExpression = variableSearchExpression;
+		this.file = file;
+		this.methodSearchExpression = null;
+		this.line = -1;
 	}
 
 	private int sourceLine(ASTNode node) {
@@ -66,7 +82,7 @@ public class EditorVisitor extends ASTVisitor{
 	}
 
 	private int endLine(ASTNode node) {
-		return ((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition() + node.getLength());
+		return((CompilationUnit) node.getRoot()).getLineNumber(node.getStartPosition() + node.getLength());
 	}	
 
 	//visits class and sets in the module the line where the class statement is and the offset of the end of the file
@@ -120,8 +136,17 @@ public class EditorVisitor extends ASTVisitor{
 			if(line == -1 || line == sourceLine(node)) {
 				codeGeneratorModel.setVariableOffset(node.getStartPosition() + expressionType.length());
 			}
+			handleSearchVariable(node);
 			return true;
 		}
 		return false;
+	}
+
+	private void handleSearchVariable(VariableDeclarationFragment node) {
+		if(node.getParent() instanceof VariableDeclarationStatement && 
+				node.getName().toString().toLowerCase().contains(variableSearchExpression.toLowerCase())) {
+			codeGeneratorModel.addSearchResult(new MatchResult(file, node.getName().toString(), 
+					sourceLine(node), node.getStartPosition()));
+		}
 	}
 }

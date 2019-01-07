@@ -28,8 +28,12 @@ import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.AcessLeve
 import pa.iscde.codegenerator.extensability.CodeStringGeneratorService.IfType;
 import pa.iscde.codegenerator.wrappers.Field;
 import pa.iscde.codegenerator.wrappers.SimpleMethod;
+import pa.iscde.search.model.MatchResult;
+import pa.iscde.search.services.SearchService;
 import pt.iscte.pidesco.extensibility.PidescoView;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+import pt.iscte.pidesco.projectbrowser.model.PackageElement;
+import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
 
 /**
@@ -44,6 +48,8 @@ public class CodeGeneratorView implements PidescoView{
 	private final static int INITIAL_UNIQUE_NAME = 1;
 	private JavaEditorServices javaService;
 	private CodeStringGeneratorService currentCodeGeneratorService;
+	private ProjectBrowserServices browserService;
+	private SearchService searchService;
 	private Map<String, CodeStringGeneratorService> extensionServicesMap;
 	private CodeGeneratorModel model;
 	//View
@@ -65,12 +71,14 @@ public class CodeGeneratorView implements PidescoView{
 	private Button generateVariableNameButton;
 	private Button generateGetterSetterButton;
 	private Button generateFieldButton;
+	private Button generateSearchButton;
 
 	@Override
 	public void createContents(Composite parent, Map<String, Image> imageMap) {
 		javaService = CodeGeneratorActivator.getInstance().getJavaEditorServices();
 		currentCodeGeneratorService = CodeGeneratorActivator.getInstance().getCodeGeneratorService();
-
+		searchService = CodeGeneratorActivator.getInstance().getSearchService();
+		browserService = CodeGeneratorActivator.getInstance().getBrowserService();
 		model = new CodeGeneratorModel(javaService);
 		createLayout(parent);
 		createButtons();
@@ -302,6 +310,52 @@ public class CodeGeneratorView implements PidescoView{
 		};
 	}
 
+	private SelectionListener setSearchListener() {
+		return new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CodeGeneratorResponse codeGeneratorResponse = model.getCodeGeneratorResponseWithDefaultOffset();
+				File file = codeGeneratorResponse.getFile();
+				if(file != null) {
+					String selection = codeGeneratorResponse.getSelection();
+					PackageElement root = browserService.getRootPackage();
+					List<MatchResult> fieldResults = searchService.searchField(selection, root);
+					List<MatchResult> methodResults = searchService.searchMethod(selection, root);
+					int linesAdded = 0;
+					for(MatchResult matchResult : fieldResults) {
+						linesAdded = insertFieldComments(matchResult, linesAdded);
+					}
+					for(MatchResult matchResult : methodResults) {
+						linesAdded = insertMethodComments(matchResult, linesAdded);
+					}
+				}
+				else {
+					setErrorMessage(NO_FILE_OPENED_ERROR);
+				}
+			}
+		};
+	}
+
+	private int insertFieldComments(MatchResult matchResult, int linesAdded) {
+		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
+				matchResult.getLineNumber() + linesAdded - 1);
+		linesAdded++;
+		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
+				matchResult.getLineNumber() + linesAdded);
+		linesAdded++;
+		return linesAdded;
+	}
+	
+	private int insertMethodComments(MatchResult matchResult, int linesAdded) {
+		model.parse(matchResult.getFile(), matchResult.getNodeName(), null);
+		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentBeginString(), 
+				matchResult.getLineNumber() + linesAdded - 1);
+		linesAdded++;
+		javaService.insertLine(matchResult.getFile(), currentCodeGeneratorService.generateCommentEndString(), 
+				model.getMethodEndLine() + 1);
+		linesAdded++;
+		return linesAdded;
+	}
+	
 	//Handles the creation of all extensions
 	private void createExtensions() {
 		createFunctionReplacementExtension();
@@ -434,6 +488,8 @@ public class CodeGeneratorView implements PidescoView{
 		generateConstructorWithBindingButton.setText("Create constructor and bind");
 		generateFieldButton = new Button(mainViewArea, SWT.PUSH);
 		generateFieldButton.setText("Create Field");
+		generateSearchButton = new Button(mainViewArea, SWT.PUSH);
+		generateSearchButton.setText("Comment all selection occurences");
 	}
 
 	private void createRadioButton(Composite composite, String name, boolean select) {
@@ -461,6 +517,7 @@ public class CodeGeneratorView implements PidescoView{
 		generateMethodButton.addSelectionListener(setMethodListener());
 		generateConstructorWithBindingButton.addSelectionListener(setConstructorWithBindingListnener());
 		generateFieldButton.addSelectionListener(setFieldListener());
+		generateSearchButton.addSelectionListener(setSearchListener());
 	}
 
 	//Creates the label that will be responsible for showing any possible errors in the generation of code

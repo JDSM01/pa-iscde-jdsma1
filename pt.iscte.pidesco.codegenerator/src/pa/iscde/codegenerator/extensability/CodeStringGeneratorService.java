@@ -184,6 +184,18 @@ public interface CodeStringGeneratorService {
 			List<Field> arguments, String returnValue, String body);
 
 	/**
+	 * Generates a string to be used to comment in the beginning of the code block
+	 * @return A string to be used at the beginning of the code block
+	 */
+	String generateCommentBeginString();
+
+	/**
+	 * Generates a string to be used to comment in the end of the code block
+	 * @return A string to be used at the end of the code block
+	 */
+	String generateCommentEndString();
+	
+	/**
 	 * Enum with the different types of if that can be generated
 	 * CONDITION: an if where you set the condition
 	 * NULL: an if where the input is then verified against a == null

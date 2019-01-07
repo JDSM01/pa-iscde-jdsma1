@@ -270,6 +270,18 @@ public class CodeGeneratorController implements CodeStringGeneratorService{
 		}
 		return "";
 	}
+	
+	//Search integration methods
+	
+	@Override
+	public String generateCommentBeginString() {
+		return "/*";
+	}
+	
+	@Override
+	public String generateCommentEndString() {
+		return "*/";
+	}
 }
 
 

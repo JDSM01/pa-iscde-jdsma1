@@ -12,7 +12,10 @@ import org.eclipse.jface.text.ITextSelection;
 
 import pa.iscde.codegenerator.wrappers.Field;
 import pa.iscde.codegenerator.wrappers.SimpleMethod;
+import pa.iscde.search.model.MatchResult;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
+import pt.iscte.pidesco.projectbrowser.model.PackageElement;
+import pt.iscte.pidesco.projectbrowser.model.SourceElement;
 /**
  * This class is responsible to give the view the required objects and information.
  * @author D01
@@ -27,6 +30,7 @@ public class CodeGeneratorModel {
 	private int endOfFile;
 	private int variableOffset;
 	private int startLine;
+	private List<MatchResult> searchResults;
 
 	public CodeGeneratorModel(JavaEditorServices javaService) {
 		this.javaService = javaService;
@@ -312,5 +316,38 @@ public class CodeGeneratorModel {
 			return "Selection was not valid";
 		}
 		return null;
+	}
+
+	//Search Integration methods
+
+	public void searchParse(final SourceElement rootPackage, String input) {
+		if (rootPackage.isClass()) {
+			File file = rootPackage.getFile();
+			if(file != null) {
+				javaService.parseFile(file, new EditorVisitor(this, input, file));
+			}
+		} else {
+			for (SourceElement c : ((PackageElement) rootPackage).getChildren()) {
+				searchParse(c, input);
+			}
+		}
+	}
+
+	//Adds the matchResult to the list of searchResults
+	public void addSearchResult(MatchResult matchResult) {
+		if(searchResults == null) {
+			searchResults = new ArrayList<>();
+		}
+		searchResults.add(matchResult);
+	}
+
+	//Gets the matchResults from the search and resets the list
+	public List<MatchResult> getSearchResults(){
+		if(searchResults != null) {
+			List<MatchResult> matchResults = searchResults;
+			searchResults = Collections.emptyList();
+			return matchResults;
+		}
+		return Collections.emptyList();
 	}
 }

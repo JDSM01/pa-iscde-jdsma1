@@ -232,7 +232,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments);
-		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+	int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
 		javaService.insertLine(file, method, endLine);
 	}
 
@@ -242,7 +242,7 @@ public class CodeGeneratorServiceImpl implements CodeGeneratorService{
 		File file = codeGeneratorModel.getOpenedFile();
 		codeGeneratorModel.parse(file, codeGeneratorModel.getFileNameWithoutExtension(), null);
 		String method = codeStringGeneratorService.generateMethod(acessLevel, isStatic, returnType, methodName, arguments, returnValue);
-		int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
+			int endLine = getCorrectLine(codeGeneratorModel.getMethodEndLine());
 		javaService.insertLine(file, method, endLine);
 	}
 

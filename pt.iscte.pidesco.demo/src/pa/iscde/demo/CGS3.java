@@ -112,4 +112,16 @@ public class CGS3 implements CodeStringGeneratorService{
 		return null;
 	}
 
+	@Override
+	public String generateCommentBeginString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String generateCommentEndString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -12,5 +12,12 @@
             icon="smiley.png">
       </view>
    </extension>
+   <extension
+         point="pa.iscde.search.search">
+      <search
+            class="pa.iscde.codegenerator.searchExtension.SearchExtension"
+            name="Variable">
+      </search>
+   </extension>
 
 </plugin>
